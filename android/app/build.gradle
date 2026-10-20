@@ -1,0 +1,32 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.matneo.omm'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.matneo.omm"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // Sign with your own key before publishing:
+            //   keytool -genkeypair -keystore omm-release.jks -alias omm -keyalg RSA -keysize 2048 -validity 10000
+            // then fill these in and uncomment.
+            // signingConfigs { create("release") { ... } }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// No dependencies: the whole book is bundled as assets and rendered by WebView.
+dependencies { }
