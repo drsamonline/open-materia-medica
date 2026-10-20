@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Open Materia Medica">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#137a63"/><stop offset="1" stop-color="#0a4d3f"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#g)"/>
+  <g fill="none" stroke="#eafaf4" stroke-width="16" stroke-linecap="round">
+    <path d="M256 424V206"/>
+  </g>
+  <path d="M256 232c-70-6-118-42-134-108 67-6 117 27 134 108Z" fill="#eafaf4"/>
+  <path d="M256 300c62-6 105-37 120-96-60-6-104 23-120 96Z" fill="#bfe6da"/>
+  <circle cx="256" cy="150" r="26" fill="#f0c976"/>
+</svg>
