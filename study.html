@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!-- ==========================================================================
+     Open Materia Medica — © 2026 Dr. Sohil Momin, BHMS.
+     Rights are claimed in the original work only: the plain-language text,
+     the selection, compilation and arrangement, the design, illustrations and
+     code. The classical sources drawn on here are in the public domain and
+     remain free for anyone to use.
+     Owner: Dr. Sohil Momin, BHMS · Watermark: OMM·3900BE6145
+     Watermarked and fingerprinted. Copying, redistribution or rebranding of
+     the original work is not permitted. Full terms: license.html
+     ========================================================================== -->
+<html lang="en">
+<head><script>/*theme*/(function(){var t="light";try{t=localStorage.getItem("omm-theme")||"";}catch(e){}if(t!=="light"&&t!=="dark"){t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";}document.documentElement.setAttribute("data-theme",t);try{var m=localStorage.getItem("omm-mood");if(m){document.documentElement.setAttribute("data-mood",m);}}catch(e){}})();</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Study Open Materia Medica — lite flashcards and a remedy quiz, offline, straight from the 344 portraits.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.json">
+<title>Study — Open Materia Medica</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.tabs{display:flex;gap:6px;margin:18px 0 6px;flex-wrap:wrap}
+.tabs button{font:600 .9rem var(--sans);padding:9px 16px;border-radius:var(--radius-pill);
+  border:1px solid var(--line-2);background:var(--card);color:var(--ink-soft);cursor:pointer}
+.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent-d)}
+.study-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px 24px;margin:14px 0;box-shadow:var(--shadow);min-height:190px}
+.study-card .prompt{font:700 1.5rem/1.25 var(--serif);color:var(--accent-d);margin:0 0 4px}
+.study-card .from{color:var(--muted);font-size:.95rem;font-style:italic}
+.study-card .answer{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line-2);display:none}
+.study-card.revealed .answer{display:block}
+.study-card .answer p{margin:.3em 0}
+.opts{display:grid;gap:9px;margin-top:12px}
+.opts button{font:inherit;text-align:left;padding:12px 16px;border-radius:12px;border:1px solid var(--line-2);
+  background:var(--card);color:var(--ink);cursor:pointer;appearance:none;-webkit-appearance:none;
+  transition:border-color .12s,background .12s,color .12s}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{background:var(--accent-l);border-color:var(--accent);color:var(--accent-d);font-weight:700}
+.opts button.wrong{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}
+.score{font:600 .9rem var(--sans);color:var(--muted);margin-left:auto}
+.study-empty{color:var(--muted)}
+</style>
+<meta name="author" content="Dr. Sohil Momin, BHMS">
+<meta name="copyright" content="© 2026 Dr. Sohil Momin, BHMS — original text, compilation, design and code. Classical sources are public domain.">
+<meta name="license" content="license.html">
+<meta name="rights" content="All rights reserved in the original work; classical source material is public domain.">
+<meta name="fingerprint" content="OMM-3900BE6145-50AB3A2F50">
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Book","name":"Open Materia Medica","alternateName":"The classical materia medica, in plain language","description":"Study Open Materia Medica — lite flashcards and a remedy quiz, offline, straight from the 344 portraits.","inLanguage":"en","isAccessibleForFree":true,"author":{"@type":"Person","name":"Dr. Sohil Momin, BHMS"},"publisher":{"@type":"Person","name":"Dr. Sohil Momin, BHMS"},"about":{"@type":"MedicalSpecialty","name":"Homeopathy"},"genre":"Materia medica","citation":[{"@type":"Book","name":"Pocket Manual of Homoeopathic Materia Medica","author":{"@type":"Person","name":"William Boericke"}},{"@type":"Book","name":"A Dictionary of Practical Materia Medica","author":{"@type":"Person","name":"John Henry Clarke"}},{"@type":"Book","name":"Lectures on Homoeopathic Materia Medica","author":{"@type":"Person","name":"James Tyler Kent"}},{"@type":"Book","name":"Keynotes and Characteristics with Comparisons","author":{"@type":"Person","name":"Henry C. Allen"}},{"@type":"Book","name":"Leaders in Homoeopathic Therapeutics","author":{"@type":"Person","name":"Eugene Beauharnais Nash"}},{"@type":"Book","name":"Clinical Materia Medica","author":{"@type":"Person","name":"Ernest A. Farrington"}}],"license":"https://creativecommons.org/licenses/by-nc-nd/4.0/","hasPart":{"@type":"CollectionPage","name":"Remedy portraits","numberOfItems":344}}</script>
+
+<!--meta:social-->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Open Materia Medica">
+<meta property="og:title" content="Study — Open Materia Medica">
+<meta property="og:description" content="Study Open Materia Medica — lite flashcards and a remedy quiz, offline, straight from the 344 portraits.">
+<meta property="og:image" content="assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Open Materia Medica — 344 classical remedy portraits in plain language">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Study — Open Materia Medica">
+<meta name="twitter:description" content="Study Open Materia Medica — lite flashcards and a remedy quiz, offline, straight from the 344 portraits.">
+<meta name="twitter:image" content="assets/og.png">
+<meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1613" media="(prefers-color-scheme: dark)">
+<!--/meta:social-->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Book","name":"Open Materia Medica","alternateName":"The classical materia medica, in plain language","description":"Study Open Materia Medica — lite flashcards and a remedy quiz, offline, straight from the 344 portraits.","inLanguage":"en","isAccessibleForFree":true,"author":{"@type":"Person","name":"Dr. Sohil Momin, BHMS"},"publisher":{"@type":"Person","name":"Dr. Sohil Momin, BHMS"},"about":{"@type":"MedicalSpecialty","name":"Homeopathy"},"genre":"Materia medica","citation":[{"@type":"Book","name":"Pocket Manual of Homoeopathic Materia Medica","author":{"@type":"Person","name":"William Boericke"}},{"@type":"Book","name":"A Dictionary of Practical Materia Medica","author":{"@type":"Person","name":"John Henry Clarke"}},{"@type":"Book","name":"Lectures on Homoeopathic Materia Medica","author":{"@type":"Person","name":"James Tyler Kent"}},{"@type":"Book","name":"Keynotes and Characteristics with Comparisons","author":{"@type":"Person","name":"Henry C. Allen"}},{"@type":"Book","name":"Leaders in Homoeopathic Therapeutics","author":{"@type":"Person","name":"Eugene Beauharnais Nash"}},{"@type":"Book","name":"Clinical Materia Medica","author":{"@type":"Person","name":"Ernest A. Farrington"}}],"license":"https://creativecommons.org/licenses/by-nc-nd/4.0/","hasPart":{"@type":"CollectionPage","name":"Remedy portraits","numberOfItems":344}}</script>
+</head>
+<body>
+<div class="wrap" id="top">
+<a class="skip" href="#content">Skip to content</a>
+<header class="site">
+  <div class="bar">
+    <a class="brand" href="index.html" aria-label="Open Materia Medica — home">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true" fill="none"><path d="M16 29c0-9 0-15 0-22" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16 15c-5.5-.4-9.3-3.2-10.6-8.4 5.3-.5 9.2 2.1 10.6 8.4Z" fill="currentColor" opacity=".9"/><path d="M16 20c4.9-.4 8.3-2.9 9.5-7.5-4.7-.5-8.2 1.8-9.5 7.5Z" fill="currentColor" opacity=".55"/></svg>
+      <span>Open Materia Medica</span>
+    </a>
+    
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch between light and dark theme" title="Light / dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.3M12 19.3v2.3M2.4 12h2.3M19.3 12h2.3M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/></svg></button>
+    <button class="theme-toggle mood-toggle" id="mood-toggle" type="button" aria-label="Random colour mood" title="Surprise me — random colour mood"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></button>
+    <nav class="nav" id="site-nav" aria-label="Primary">
+      <a href="search.html">Search</a>
+      <a href="tools.html">Tools</a>
+      <a href="index.html">Remedies</a>
+      <a href="diseases.html">Diseases</a>
+      <a href="repertory.html">Repertory</a>
+      <a href="quick-reference.html">Quick Ref</a>
+      <a href="compare.html">Compare</a>
+      <a href="kingdoms.html">Kingdoms</a>
+      <a href="families.html">Families</a>
+      <a href="veterinary.html">Veterinary</a>
+      <a href="agro.html">Agro</a>
+      <a href="glossary.html">Glossary</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="references.html">References</a>
+      <a href="study.html">Study</a>
+      <a href="about.html">About</a>
+    </nav>
+  </div>
+</header>
+<span id="content" tabindex="-1"></span>
+<main id="main">
+<h1>Study</h1>
+<p class="sub">Two lite ways to learn the 344 portraits — flashcards, and a quiz. Everything runs offline from the same index the search uses.</p>
+
+<!--BYLINE--><aside class="byline"><img src="assets/author.jpg" alt="Dr. Sohil Momin, BHMS" width="56" height="56" loading="lazy"><p><b>Compiled by <a href="compiled-by.html">Dr. Sohil Momin, BHMS</a></b> — a Vadodara-based homoeopathic physician with fifteen years of clinical experience. <a href="compiled-by.html">About the compiler →</a></p></aside><!--/BYLINE-->
+<div class="tabs" role="tablist">
+  <button id="tab-cards" class="on" role="tab" aria-selected="true">Flashcards</button>
+  <button id="tab-quiz" role="tab" aria-selected="false">Quiz</button>
+</div>
+
+<!-- flashcards -->
+<section id="cards">
+  <div class="study-card" id="card">
+    <p class="prompt" id="card-name">Loading…</p>
+    <p class="from" id="card-from"></p>
+    <div class="answer" id="card-answer">
+      <p id="card-essence"></p>
+      <p><a id="card-link" href="#">Open the full portrait →</a></p>
+    </div>
+  </div>
+  <div class="row">
+    <button class="btn" id="card-reveal" style="background:var(--accent);color:#fff">Show answer</button>
+    <button class="btn" id="card-next" style="background:var(--card);color:var(--accent-d);border:1px solid var(--line-2)">Next card</button>
+    <span class="score" id="card-count"></span>
+  </div>
+</section>
+
+<!-- quiz -->
+<section id="quiz" hidden>
+  <div class="study-card" id="q-card">
+    <p class="from">Which remedy is this?</p>
+    <p id="q-essence" style="margin-top:8px"></p>
+    <div class="opts" id="q-opts"></div>
+  </div>
+  <div class="row">
+    <button class="btn" id="q-next" style="background:var(--card);color:var(--accent-d);border:1px solid var(--line-2)">Next question</button>
+    <span class="score" id="q-score"></span>
+  </div>
+</section>
+
+</main>
+<footer class="site">
+  <nav class="foot-nav" aria-label="Footer">
+    <a href="search.html">Search</a>
+    <a href="index.html">Remedies</a>
+    <a href="diseases.html">Diseases</a>
+    <a href="repertory.html">Repertory</a>
+    <a href="quick-reference.html">Quick Ref</a>
+    <a href="compare.html">Compare</a>
+    <a href="kingdoms.html">Kingdoms</a>
+    <a href="families.html">Families</a>
+    <a href="veterinary.html">Veterinary</a>
+    <a href="agro.html">Agro</a>
+    <a href="glossary.html">Glossary</a>
+    <a href="evidence.html">Evidence</a>
+    <a href="references.html">References</a>
+    <a href="study.html">Study</a>
+    <a href="about.html">About</a>
+    <a href="basics.html">Read this first</a>
+    <a href="dedication.html">Dedication</a>
+    <a href="license.html">Licence</a>
+  </nav>
+  <p class="small" style="margin:0 0 6px">Educational reference only — not medical advice. Severe, sudden or worsening symptoms need a qualified clinician.</p>
+  <a href="#top">Back to top ↑</a>
+</footer>
+<div class="wm">Compiled by <a href="compiled-by.html">Dr. Sohil Momin, BHMS</a> · Open Materia Medica</div>
+</div>
+
+<script src="assets/search-index.js"></script>
+<script>
+(function () {
+  var DATA = (window.OMM_INDEX || []).filter(function (r) { return r.essence && r.name; });
+  var cards = document.getElementById('cards'), quiz = document.getElementById('quiz');
+  var tabC = document.getElementById('tab-cards'), tabQ = document.getElementById('tab-quiz');
+
+  tabC.addEventListener('click', function () { show('cards'); });
+  tabQ.addEventListener('click', function () { show('quiz'); });
+  function show(which) {
+    cards.hidden = which !== 'cards'; quiz.hidden = which !== 'quiz';
+    tabC.classList.toggle('on', which === 'cards'); tabQ.classList.toggle('on', which === 'quiz');
+    tabC.setAttribute('aria-selected', which === 'cards'); tabQ.setAttribute('aria-selected', which === 'quiz');
+    if (which === 'cards' && !current) nextCard();
+    if (which === 'quiz' && !qCurrent) nextQuestion();
+  }
+
+  if (!DATA.length) {
+    document.getElementById('card-name').textContent = 'Index not loaded';
+    document.getElementById('card-from').textContent = 'Open the site through a web server or your installed app.';
+    return;
+  }
+
+  function pick(pool, not) {
+    for (var i = 0; i < 60; i++) { var r = pool[Math.floor(Math.random() * pool.length)]; if (r !== not) return r; }
+    return pool[0];
+  }
+
+  /* ---------- flashcards ---------- */
+  var current = null, seen = 0;
+  function nextCard() {
+    current = pick(DATA, current); seen++;
+    var c = document.getElementById('card');
+    c.classList.remove('revealed');
+    document.getElementById('card-name').textContent = current.name;
+    document.getElementById('card-from').textContent = current.tagline || '';
+    document.getElementById('card-essence').textContent = current.essence || '';
+    document.getElementById('card-link').setAttribute('href', 'remedies/' + current.slug + '.html');
+    document.getElementById('card-count').textContent = 'Card ' + seen;
+  }
+  document.getElementById('card-reveal').addEventListener('click', function () {
+    document.getElementById('card').classList.add('revealed');
+  });
+  document.getElementById('card-next').addEventListener('click', nextCard);
+
+  /* the portrait ends with a giveaway like "…: that is Sepia." — hide the answer */
+  function escRe(s){ return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  function redact(text, name){
+    var out = String(text || '');
+    var names = [name], first = name.split(/\s+/)[0];
+    if (first && first.length >= 4 && first.toLowerCase() !== name.toLowerCase()) names.push(first);
+    names.forEach(function(n){
+      if (n) out = out.replace(new RegExp('\\b' + escRe(n) + '\\b', 'ig'), '\u2014\u2014');
+    });
+    out = out.replace(/[:;,\u2014\u2013-]\s*that is[^.]*\.?\s*$/i, ' \u2026');
+    out = out.replace(/\s+([.,;:])/g, '$1').replace(/\s+/g, ' ').trim();
+    return out;
+  }
+
+  /* ---------- quiz ---------- */
+  var qCurrent = null, qRight = 0, qTotal = 0, qLocked = false;
+  function nextQuestion() {
+    qCurrent = pick(DATA, qCurrent); qLocked = false; qTotal++;
+    document.getElementById('q-essence').textContent = redact(qCurrent.essence || qCurrent.tagline, qCurrent.name);
+    var opts = [qCurrent];
+    while (opts.length < 4) { var c = pick(DATA, qCurrent); if (opts.indexOf(c) === -1) opts.push(c); }
+    opts.sort(function () { return Math.random() - 0.5; });
+    var box = document.getElementById('q-opts'); box.innerHTML = '';
+    opts.forEach(function (r) {
+      var b = document.createElement('button');
+      b.textContent = r.name;
+      b.addEventListener('click', function () {
+        if (qLocked) return; qLocked = true;
+        if (r === qCurrent) { b.classList.add('right'); qRight++; }
+        else {
+          b.classList.add('wrong');
+          Array.prototype.forEach.call(box.children, function (x) {
+            if (x.textContent === qCurrent.name) x.classList.add('right');
+          });
+        }
+        updateScore();
+      });
+      box.appendChild(b);
+    });
+    updateScore();
+  }
+  function updateScore() {
+    document.getElementById('q-score').textContent = 'Score: ' + qRight + ' / ' + qTotal;
+  }
+  document.getElementById('q-next').addEventListener('click', nextQuestion);
+
+  nextCard();
+  nextQuestion();
+})();
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>
