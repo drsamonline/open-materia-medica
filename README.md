@@ -79,7 +79,6 @@ by <strong>Dr. Sohil Momin, BHMS</strong>.</p>
 <p>
   <a href="https://drsamonline.github.io/open-materia-medica/play/"><strong>Read it online &nbsp;→</strong></a>
   &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://github.com/drsamonline/open-materia-medica/releases/latest"><strong>Download the Android app &nbsp;→</strong></a>
 </p>
 
 <img src="assets/og.png" alt="Open Materia Medica — 344 classical remedy portraits, in plain language" width="840">
