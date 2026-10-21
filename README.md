@@ -4,6 +4,51 @@
 
 <h1>Open Materia Medica</h1>
 
+<p><strong>344 remedy portraits, open to everyone.</strong></p>
+
+<p>A free, offline, open-to-everyone materia medica — the classical portraits in<br>
+plain language, each one set beside the real pharmacology and toxicology of the<br>
+substance it is made from.</p>
+
+<p>
+  <a href="https://drsamonline.github.io/open-materia-medica/"><img src="https://img.shields.io/badge/landing%20page-open--materia--medica-1f5136?logo=githubpages&logoColor=white" alt="Landing page"></a>
+  <a href="https://drsamonline.github.io/open-materia-medica/play/"><img src="https://img.shields.io/badge/web%20edition-read%20online-a9863c?logo=readthedocs&logoColor=white" alt="Web edition"></a>
+  <a href="https://github.com/drsamonline/open-materia-medica/releases/latest"><img src="https://img.shields.io/github/v/release/drsamonline/open-materia-medica?color=1f5136&label=release&logo=github" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/licence-all%20rights%20reserved-6e1f2a" alt="Licence: all rights reserved"></a>
+</p>
+
+<p>
+  <a href="https://img.shields.io/github/stars/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/stars/drsamonline/open-materia-medica?style=for-the-badge&color=1f5136&labelColor=143a27" alt="GitHub stars"></a>
+  <a href="https://img.shields.io/github/forks/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/forks/drsamonline/open-materia-medica?style=for-the-badge&color=1f5136&labelColor=143a27" alt="GitHub forks"></a>
+  <a href="https://img.shields.io/github/license/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/license/drsamonline/open-materia-medica?style=for-the-badge&color=a9863c&labelColor=143a27" alt="Licence"></a>
+  <a href="https://img.shields.io/github/last-commit/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/last-commit/drsamonline/open-materia-medica?style=for-the-badge&color=1f5136&labelColor=143a27" alt="Last commit"></a>
+  <a href="https://img.shields.io/github/repo-size/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/repo-size/drsamonline/open-materia-medica?style=for-the-badge&color=a9863c&labelColor=143a27" alt="Repository size"></a>
+</p>
+
+<p>
+  <a href="https://drsamonline.github.io/open-materia-medica/"><strong>Landing page &nbsp;→</strong></a>
+  &nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://drsamonline.github.io/open-materia-medica/play/"><strong>Read the web edition &nbsp;→</strong></a>
+  &nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://github.com/drsamonline/open-materia-medica/releases/latest"><strong>Download the Android app &nbsp;→</strong></a>
+</p>
+
+</div>
+
+> **Where things live.** The project **landing page** is served at
+> <https://drsamonline.github.io/open-materia-medica/>. The **web edition**
+> itself — the full 344-portrait library — is served at
+> <https://drsamonline.github.io/open-materia-medica/play/>, and its source
+> lives in [`docs/play/`](docs/play/).
+
+---
+
+<div align="center">
+
+<img src="assets/icon-192.png" alt="Open Materia Medica" width="96" height="96">
+
+<h1>Open Materia Medica</h1>
+
 <p><strong>The classical homeopathic materia medica, in plain language.</strong></p>
 
 <p>344 remedy portraits — each one set beside the real pharmacology and<br>
