@@ -47,7 +47,6 @@ substance it is made from.</p>
 
 <img src="assets/icon-192.png" alt="Open Materia Medica" width="96" height="96">
 
-<h1>Open Materia Medica</h1>
 
 <p><strong>The classical homeopathic materia medica, in plain language.</strong></p>
 
@@ -78,7 +77,7 @@ by <strong>Dr. Sohil Momin, BHMS</strong>.</p>
 </p>
 
 <p>
-  <a href="https://drsamonline.github.io/open-materia-medica/"><strong>Read it online &nbsp;→</strong></a>
+  <a href="https://drsamonline.github.io/open-materia-medica/play/"><strong>Read it online &nbsp;→</strong></a>
   &nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="https://github.com/drsamonline/open-materia-medica/releases/latest"><strong>Download the Android app &nbsp;→</strong></a>
 </p>
