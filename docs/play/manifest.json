@@ -1,0 +1,47 @@
+{
+  "name": "Open Materia Medica",
+  "short_name": "Materia Medica",
+  "description": "344 classical remedy portraits retold in plain language, each set beside the real pharmacology of its source substance — an offline clinical reference.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f1e8",
+  "theme_color": "#0e6b5c",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "_copyright": "© 2026 Dr. Sohil Momin, BHMS. Rights claimed in the original text, compilation, design and code only; classical sources are public domain.",
+  "_owner": "Dr. Sohil Momin, BHMS",
+  "_fingerprint": "OMM-29AA5C13A1",
+  "scope": "./",
+  "id": "./",
+  "orientation": "any"
+}
