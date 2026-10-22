@@ -28,7 +28,7 @@ substance it is made from.</p>
 <p>
   <a href="https://drsamonline.github.io/open-materia-medica/"><strong>Landing page &nbsp;→</strong></a>
   &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://drsamonline.github.io/open-materia-medica/play/"><strong>Read the web edition &nbsp;→</strong></a>
+  <a href="https://drsamonline.github.io/open-materia-medica/play/"><strong>Read the web edition &nbsp;→</strong></a> &nbsp;·&nbsp; <a href="https://github.com/drsamonline/open-materia-medica/releases/latest/download/open-materia-medica-portable.exe"><strong>Download for Windows (.exe)</strong></a> &nbsp;·&nbsp; <a href="https://github.com/drsamonline/open-materia-medica/releases/latest/download/open-materia-medica.apk"><strong>Download for Android (.apk)</strong></a>
   &nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="https://github.com/drsamonline/open-materia-medica/releases/latest"><strong>Download the Android app &nbsp;→</strong></a>
 </p>
