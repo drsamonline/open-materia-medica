@@ -20,7 +20,7 @@ substance it is made from.</p>
 <p>
   <a href="https://img.shields.io/github/stars/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/stars/drsamonline/open-materia-medica?style=for-the-badge&color=1f5136&labelColor=143a27" alt="GitHub stars"></a>
   <a href="https://img.shields.io/github/forks/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/forks/drsamonline/open-materia-medica?style=for-the-badge&color=1f5136&labelColor=143a27" alt="GitHub forks"></a>
-  <a href="https://img.shields.io/github/license/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/license/drsamonline/open-materia-medica?style=for-the-badge&color=a9863c&labelColor=143a27" alt="Licence"></a>
+  <a href="https://github.com/drsamonline/open-materia-medica/blob/main/LICENSE"><img src="https://img.shields.io/badge/licence-all%20rights%20reserved-6e1f2a?style=for-the-badge&labelColor=143a27" alt="Licence"></a>
   <a href="https://img.shields.io/github/last-commit/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/last-commit/drsamonline/open-materia-medica?style=for-the-badge&color=1f5136&labelColor=143a27" alt="Last commit"></a>
   <a href="https://img.shields.io/github/repo-size/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/repo-size/drsamonline/open-materia-medica?style=for-the-badge&color=a9863c&labelColor=143a27" alt="Repository size"></a>
 </p>
