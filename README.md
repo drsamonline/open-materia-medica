@@ -21,7 +21,6 @@ substance it is made from.</p>
 <p>
   <a href="https://img.shields.io/github/stars/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/stars/drsamonline/open-materia-medica?style=for-the-badge&color=1f5136&labelColor=143a27" alt="GitHub stars"></a>
   <a href="https://img.shields.io/github/forks/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/forks/drsamonline/open-materia-medica?style=for-the-badge&color=1f5136&labelColor=143a27" alt="GitHub forks"></a>
-  <a href="https://github.com/drsamonline/open-materia-medica/blob/main/LICENSE"><img src="https://img.shields.io/badge/licence-all%20rights%20reserved-6e1f2a?style=for-the-badge&labelColor=143a27" alt="Licence"></a>
   <a href="https://img.shields.io/github/last-commit/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/last-commit/drsamonline/open-materia-medica?style=for-the-badge&color=1f5136&labelColor=143a27" alt="Last commit"></a>
   <a href="https://img.shields.io/github/repo-size/drsamonline/open-materia-medica?style=for-the-badge"><img src="https://img.shields.io/github/repo-size/drsamonline/open-materia-medica?style=for-the-badge&color=a9863c&labelColor=143a27" alt="Repository size"></a>
 </p>
@@ -46,22 +45,9 @@ substance it is made from.</p>
 
 <div align="center">
 
-<img src="assets/icon-192.png" alt="Open Materia Medica" width="96" height="96">
-
-
-<p><strong>The classical homeopathic materia medica, in plain language.</strong></p>
-
-<p>344 remedy portraits — each one set beside the real pharmacology and<br>
-toxicology of the substance it is made from.</p>
-
-<p>The free web edition of, and offline Android companion app to, the book<br>
-by <strong>Dr. Sohil Momin, BHMS</strong>.</p>
-
 <p>
   <a href="https://drsamonline.github.io/open-materia-medica/"><img src="https://img.shields.io/badge/live%20site-open--materia--medica-0e6b5c?logo=githubpages&logoColor=white" alt="Live site"></a>
-  <a href="https://github.com/drsamonline/open-materia-medica/releases/latest"><img src="https://img.shields.io/github/v/release/drsamonline/open-materia-medica?color=0e6b5c&label=release&logo=github" alt="Latest release"></a>
   <a href="https://github.com/drsamonline/open-materia-medica/releases"><img src="https://img.shields.io/github/downloads/drsamonline/open-materia-medica/total?color=b8862b&label=APK%20downloads" alt="APK downloads"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/licence-all%20rights%20reserved-6e1f2a" alt="Licence: all rights reserved"></a>
 </p>
 
 <p>
@@ -71,11 +57,6 @@ by <strong>Dr. Sohil Momin, BHMS</strong>.</p>
   <img src="https://img.shields.io/badge/dependencies-none-6e1f2a" alt="No dependencies">
 </p>
 
-<p>
-  <img src="https://img.shields.io/github/last-commit/drsamonline/open-materia-medica?color=0e6b5c&label=last%20commit" alt="Last commit">
-  <img src="https://img.shields.io/github/repo-size/drsamonline/open-materia-medica?color=b8862b&label=repo%20size" alt="Repository size">
-  <img src="https://img.shields.io/github/stars/drsamonline/open-materia-medica?color=0e6b5c&label=stars" alt="Stars">
-</p>
 
 <p>
   <a href="https://drsamonline.github.io/open-materia-medica/play/"><strong>Read it online &nbsp;→</strong></a>
