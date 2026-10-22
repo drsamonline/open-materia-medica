@@ -12,6 +12,7 @@ substance it is made from.</p>
 
 <p>
   <a href="https://drsamonline.github.io/open-materia-medica/"><img src="https://img.shields.io/badge/landing%20page-open--materia--medica-1f5136?logo=githubpages&logoColor=white" alt="Landing page"></a>
+<a href="https://drsamonline.github.io/"><img src="https://img.shields.io/badge/All%20projects-drsamonline.github.io-1f5136?logo=githubpages&logoColor=white" alt="All projects"></a>
   <a href="https://drsamonline.github.io/open-materia-medica/play/"><img src="https://img.shields.io/badge/web%20edition-read%20online-a9863c?logo=readthedocs&logoColor=white" alt="Web edition"></a>
   <a href="https://github.com/drsamonline/open-materia-medica/releases/latest"><img src="https://img.shields.io/github/v/release/drsamonline/open-materia-medica?color=1f5136&label=release&logo=github" alt="Latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-all%20rights%20reserved-6e1f2a" alt="Licence: all rights reserved"></a>
