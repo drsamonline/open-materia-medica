@@ -1,3 +1,10 @@
+
+
+<!-- shot:start -->
+
+![Screenshot](docs/shot.png)
+
+<!-- shot:end -->
 <div align="center">
 
 <img src="assets/icon-192.png" alt="Open Materia Medica" width="96" height="96">
