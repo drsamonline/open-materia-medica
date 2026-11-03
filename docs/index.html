@@ -269,6 +269,16 @@ html.js .reveal.in{opacity:1;transform:none}
   .card:hover{transform:none}
   .btn:hover{transform:none}
 }
+
+  /* ---------- light theme ----------
+     Added so the page reads on paper. It overrides the page's own variables and
+     nothing else — no markup, no layout, no type. */
+  :root, html {
+    color-scheme: light;
+    --paper: #f7f6f2;
+    --ink: #14161a;
+    --card: #ffffff;
+  }
 </style>
 </head>
 <body>
