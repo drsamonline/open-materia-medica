@@ -560,5 +560,21 @@ window.addEventListener("error", function () { window.__bootError = true; });
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   });
 })();
-</script></body>
+</script><style id="app-theme">
+  /* open-materia-medica - its own palette, type and shape.
+     Keyed on data-theme so the in-app theme toggle still works; !important is
+     required because web-kit sets these as inline styles on <html>. */
+  html[data-theme="dark"]{--bg:#060f0e !important;--card:#071711 !important;--ink:#eff6f1 !important;--mut:#568a76 !important;--line:#092316 !important;--acc:#57a473 !important;}
+  html[data-theme="light"]{--bg:#f4f9f6 !important;--card:#ffffff !important;--ink:#0c1d1b !important;--mut:#2e7650 !important;--line:#deede4 !important;--acc:#116932 !important;}
+  html,body{font-family:ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif !important;letter-spacing:-.01em !important;
+    background-image:radial-gradient(820px 360px at 50% -170px,
+      color-mix(in srgb, var(--acc) 16%, transparent), transparent 72%) !important;
+    background-repeat:no-repeat !important;background-attachment:fixed !important}
+  button,input,textarea,select{font-family:ui-serif, Georgia, "Iowan Old Style", "Times New Roman", serif !important}
+  button,.btn{border-radius:10px !important}
+  input,textarea,select{border-radius:8px !important}
+  .card,[class*="card"]{border-radius:12px !important}
+  button:not(.ghost):not(.tab){background:var(--acc) !important}
+</style>
+</body>
 </html>

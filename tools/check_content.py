@@ -111,6 +111,27 @@ def main():
             if c != n:
                 problems.append("README.md advertises %d remedy portraits but there are %d" % (c, n))
 
+    # 6. every page has ONE text: the served edition is the source page, not a
+    #    second copy that is free to drift. This check exists because the app's
+    #    own palette was added to docs/play/index.html alone (875629d, "the app
+    #    gets its own palette") and the app source never got it - so the demo was
+    #    a better page than the app it demonstrates, and every check above stayed
+    #    green. Anything that belongs to the page belongs to BOTH copies.
+    served_pages = os.path.join(ROOT, "docs", "play")
+    if not os.path.isdir(served_pages):
+        problems.append("docs/play directory not found")
+    else:
+        root_pages = sorted(f for f in os.listdir(ROOT) if f.endswith(".html"))
+        for f in root_pages:
+            twin = os.path.join(served_pages, f)
+            if not os.path.exists(twin):
+                problems.append("docs/play/%s is missing (source page has no served twin)" % f)
+            elif read(os.path.join(ROOT, f)) != read(twin):
+                problems.append(
+                    "docs/play/%s differs from %s - the served edition and the source page must be the same text"
+                    % (f, f)
+                )
+
     if problems:
         print("\nFAIL: %d problem(s) found:" % len(problems))
         for p in problems:
