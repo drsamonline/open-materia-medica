@@ -1,0 +1,104 @@
+{
+  "_note": "Pages are set by hand, from the 2026-11-05 audit. A sweep must not restore anything listed in `deleted`, must not create a landing page where `landing` already points, and must not overwrite `landing` or `app`.",
+  "manual": true,
+  "landing": "docs/index.html",
+  "app": "docs/play/index.html",
+  "deleted": [
+    {
+      "path": "veterinary.html",
+      "pid": "p205",
+      "commit": "2d9f9608"
+    },
+    {
+      "path": "tools.html",
+      "pid": "p204",
+      "commit": "581e5e88"
+    },
+    {
+      "path": "search.html",
+      "pid": "p202",
+      "commit": "8962ba37"
+    },
+    {
+      "path": "study.html",
+      "pid": "p203",
+      "commit": "2fde157f"
+    },
+    {
+      "path": "license.html",
+      "pid": "p198",
+      "commit": "f32af754"
+    },
+    {
+      "path": "references.html",
+      "pid": "p200",
+      "commit": "90dea79d"
+    },
+    {
+      "path": "repertory.html",
+      "pid": "p201",
+      "commit": "b5239bf8"
+    },
+    {
+      "path": "families.html",
+      "pid": "p194",
+      "commit": "e22637e1"
+    },
+    {
+      "path": "kingdoms.html",
+      "pid": "p197",
+      "commit": "778119b9"
+    },
+    {
+      "path": "glossary.html",
+      "pid": "p195",
+      "commit": "07c1acb4"
+    },
+    {
+      "path": "index.html",
+      "pid": "p196",
+      "commit": "75a44bc2"
+    },
+    {
+      "path": "diseases.html",
+      "pid": "p172",
+      "commit": "1a118f09"
+    },
+    {
+      "path": "evidence.html",
+      "pid": "p193",
+      "commit": "a06dfb3f"
+    },
+    {
+      "path": "agro.html",
+      "pid": "p167",
+      "commit": "ea7e3844"
+    },
+    {
+      "path": "basics.html",
+      "pid": "p168",
+      "commit": "7eedf841"
+    },
+    {
+      "path": "compare.html",
+      "pid": "p169",
+      "commit": "0c2f6c22"
+    },
+    {
+      "path": "about.html",
+      "pid": "p166",
+      "commit": "0bcf88fb"
+    },
+    {
+      "path": "quick-reference.html",
+      "pid": "p199",
+      "commit": "526a3c26"
+    },
+    {
+      "path": "compiled-by.html",
+      "pid": "p170",
+      "commit": "71e59bb1"
+    }
+  ],
+  "updated": "2026-11-06"
+}
