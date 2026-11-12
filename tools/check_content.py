@@ -20,7 +20,10 @@ import os
 import re
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# OMM_ROOT lets the self-test (tools/test_check_content.py) point the check at a
+# throwaway corpus, so the check can be proved to FAIL on drift without touching
+# the real 344 portraits.
+ROOT = os.environ.get("OMM_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 REQUIRED_META = [
     '<title>',
@@ -42,6 +45,29 @@ def read(path):
         return f.read()
 
 
+def find_remedy_index(root):
+    """The page that lists every portrait, wherever the corpus currently keeps it."""
+    for candidate in (os.path.join("docs", "play", "index.html"), "index.html"):
+        path = os.path.join(root, candidate)
+        if os.path.exists(path):
+            return path
+    return None
+
+
+def corpus_pages(root):
+    """Every HTML page that belongs to the corpus: the root pages and the served
+    edition's pages. The 344 portraits are not pages in this sense - they are the
+    thing the pages link to - and neither is the served copy of them."""
+    pages = []
+    for directory in (root, os.path.join(root, "docs", "play")):
+        if not os.path.isdir(directory):
+            continue
+        for f in sorted(os.listdir(directory)):
+            if f.endswith(".html"):
+                pages.append(os.path.join(directory, f))
+    return pages
+
+
 def main():
     remedies_dir = os.path.join(ROOT, "remedies")
     if not os.path.isdir(remedies_dir):
@@ -60,16 +86,31 @@ def main():
             if token not in text:
                 problems.append("%s: missing %s" % (rel(os.path.join(remedies_dir, f)), token))
 
-    # 2. the landing index references exactly the portraits on disk
-    index_path = os.path.join(ROOT, "index.html")
-    if os.path.exists(index_path):
-        refs = set(re.findall(r"remedies/([a-z0-9-]+)\.html", read(index_path)))
-        for s in sorted(refs - slugs):
-            problems.append("index.html references remedies/%s.html which does not exist" % s)
-        for s in sorted(slugs - refs):
-            problems.append("remedies/%s.html is not referenced from index.html" % s)
+    # 2. the index that lists the portraits references exactly the corpus on disk.
+    #
+    #    This used to read ROOT/index.html and nothing else. That page moved into the
+    #    app (docs/play/index.html) and the landing page took the root slot, so from
+    #    then on the check failed on a CLEAN tree with "index.html not found" - a red
+    #    check that says nothing about the corpus, which is the one kind of check
+    #    people learn to ignore. Resolve the index that actually exists, and name
+    #    whichever one was used so the message is about the corpus, not the layout.
+    index_path = find_remedy_index(ROOT)
+    if index_path is None:
+        problems.append("no remedies index found (looked for docs/play/index.html and index.html)")
     else:
-        problems.append("index.html not found")
+        refs = set(re.findall(r"remedies/([a-z0-9-]+)\.html", read(index_path)))
+        for s in sorted(slugs - refs):
+            problems.append("remedies/%s.html is not referenced from %s" % (s, rel(index_path)))
+
+    # 2b. no page links a portrait that is not there. The index was the only page
+    #     checked, so families.html, diseases.html, kingdoms.html, repertory.html,
+    #     quick-reference.html, agro.html and veterinary.html - seven pages carrying
+    #     504 portrait links between them - were free to point at a deleted remedy.
+    for page in corpus_pages(ROOT):
+        if index_path is not None and os.path.abspath(page) == os.path.abspath(index_path):
+            continue
+        for s in sorted(set(re.findall(r"remedies/([a-z0-9-]+)\.html", read(page))) - slugs):
+            problems.append("%s links remedies/%s.html which does not exist" % (rel(page), s))
 
     # 3. the offline search index has exactly one entry per portrait
     si_path = os.path.join(ROOT, "assets", "search-index.js")

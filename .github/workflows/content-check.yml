@@ -1,0 +1,53 @@
+# The corpus check, actually run.
+#
+# tools/check_content.py existed and was never executed by anything: build-apps.yml
+# only builds and deploys, so the check that guards 344 portraits against drift was
+# a file nobody ran. It was also red on a clean tree - it looked for a root
+# index.html that had moved into the app - which is the fastest way to teach
+# everyone to ignore a check.
+#
+# This runs it, and runs its self-test first: a check that has only ever been seen
+# to pass is not a check.
+
+name: content check
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'remedies/**'
+      - 'docs/play/**'
+      - 'assets/search-index.js'
+      - 'README.md'
+      - 'tools/**'
+      - '.github/workflows/content-check.yml'
+  pull_request:
+    paths:
+      - 'remedies/**'
+      - 'docs/play/**'
+      - 'assets/search-index.js'
+      - 'README.md'
+      - 'tools/**'
+      - '.github/workflows/content-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # 1. the check still goes red on every drift it claims to catch
+      - name: The check fails on drift
+        run: python3 tools/test_check_content.py
+
+      # 2. and the corpus as it stands is consistent
+      - name: The corpus is consistent
+        run: python3 tools/check_content.py
