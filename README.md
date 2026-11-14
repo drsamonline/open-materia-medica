@@ -195,6 +195,10 @@ network at all: the service worker caches the entire library.
   `href` prefixes (`../` inside `remedies/`).
 - **The search index** is generated from the remedy pages. After editing
   remedies, rebuild `assets/search-index.js` so search stays current.
+- **After any content edit**, run `python3 tools/check_content.py` — it proves the
+  index, the offline search index, the served edition and the advertised count all
+  still agree with `remedies/`. `python3 tools/test_check_content.py` proves the check
+  itself still fails on a broken tree. CI runs both on every push.
 - **Colours and typography** are tokens at the top of `assets/style.css`
   (`--accent`, `--paper`, `--serif`, …). Change them there and the whole site
   follows.

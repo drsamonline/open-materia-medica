@@ -1,0 +1,44 @@
+# Content check — the corpus guard.
+#
+# SPDX-FileCopyrightText: 2026 Dr Sohil Momin
+# SPDX-License-Identifier: LicenseRef-Forge-Proprietary
+#
+# Why this file exists: `tools/check_content.py` guards the invariants of the
+# 344-portrait corpus (index coverage, search index, served edition, README
+# count) — and nothing ran it. So it rotted: it still looked for `<root>/index.html`
+# after the site moved under `docs/`, and had been failing on a clean tree ever
+# since, which is indistinguishable from having no guard at all. A check that
+# nothing runs is a comment.
+#
+# The tests come first: `tools/test_check_content.py` proves the check fails on a
+# deliberately broken tree, so a green run here means something.
+
+name: Content check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: content-check
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: content check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: the check fails when it should
+        run: python3 tools/test_check_content.py
+      - name: the corpus is consistent
+        run: python3 tools/check_content.py
