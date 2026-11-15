@@ -309,6 +309,19 @@ html.js .reveal.in{opacity:1;transform:none}
   } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }
 })();
 </script>
+<style>
+/* ---- a11y: the rules each label needs, from its measured surface ----------
+   The dark theme's green is light (#6fbf8f), so the buttons need the dark ink
+   there; the light theme's page is warm paper, so the ghost needs it too. */
+[data-theme="dark"] a.btn.btn-primary{color:#0b1020!important}
+/* the ghost appears on the dark page and on a white card, so it carries its own
+   surface: a scrim the light ink can sit on wherever it lands */
+[data-theme="dark"] a.btn.btn-ghost{background:rgba(243,239,230,.10)!important;color:#f3efe6!important}
+[data-theme="light"] a.btn.ghost{color:#0b1020!important}
+[data-theme="light"] button{color:#ffffff!important}
+[data-theme="dark"] a.btn:not(.ghost):not(.btn-ghost){color:#0b1020!important}
+[data-theme="dark"] button:not(.ghost){color:#0b1020!important}
+</style>
 </head>
 <body>
 

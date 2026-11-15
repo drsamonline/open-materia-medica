@@ -45,6 +45,19 @@
 <meta name="theme-color" content="#0e1613" media="(prefers-color-scheme: dark)">
 <!--/meta:social-->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Book","name":"Open Materia Medica","alternateName":"The classical materia medica, in plain language","description":"Open Materia Medica — 344 classical remedy portraits in plain language, with each substance's real pharmacology, a symptom search, diseases index, repertory, kingdoms and families.","inLanguage":"en","isAccessibleForFree":true,"author":{"@type":"Person","name":"Dr. Sohil Momin, BHMS"},"publisher":{"@type":"Person","name":"Dr. Sohil Momin, BHMS"},"about":{"@type":"MedicalSpecialty","name":"Homeopathy"},"genre":"Materia medica","citation":[{"@type":"Book","name":"Pocket Manual of Homoeopathic Materia Medica","author":{"@type":"Person","name":"William Boericke"}},{"@type":"Book","name":"A Dictionary of Practical Materia Medica","author":{"@type":"Person","name":"John Henry Clarke"}},{"@type":"Book","name":"Lectures on Homoeopathic Materia Medica","author":{"@type":"Person","name":"James Tyler Kent"}},{"@type":"Book","name":"Keynotes and Characteristics with Comparisons","author":{"@type":"Person","name":"Henry C. Allen"}},{"@type":"Book","name":"Leaders in Homoeopathic Therapeutics","author":{"@type":"Person","name":"Eugene Beauharnais Nash"}},{"@type":"Book","name":"Clinical Materia Medica","author":{"@type":"Person","name":"Ernest A. Farrington"}}],"license":"https://creativecommons.org/licenses/by-nc-nd/4.0/","hasPart":{"@type":"CollectionPage","name":"Remedy portraits","numberOfItems":344}}</script>
+<style>
+/* ---- a11y: the rules each label needs, from its measured surface ----------
+   The dark theme's green is light (#6fbf8f), so the buttons need the dark ink
+   there; the light theme's page is warm paper, so the ghost needs it too. */
+[data-theme="dark"] a.btn.btn-primary{color:#0b1020!important}
+/* the ghost appears on the dark page and on a white card, so it carries its own
+   surface: a scrim the light ink can sit on wherever it lands */
+[data-theme="dark"] a.btn.btn-ghost{background:rgba(243,239,230,.10)!important;color:#f3efe6!important}
+[data-theme="light"] a.btn.ghost{color:#0b1020!important}
+[data-theme="light"] button{color:#ffffff!important}
+[data-theme="dark"] a.btn:not(.ghost):not(.btn-ghost){color:#0b1020!important}
+[data-theme="dark"] button:not(.ghost){color:#0b1020!important}
+</style>
 </head>
 <body>
 <div class="wrap" id="top">
