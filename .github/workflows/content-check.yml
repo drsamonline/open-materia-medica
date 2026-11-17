@@ -1,0 +1,47 @@
+# Content check — the guard on the remedy corpus.
+#
+# SPDX-FileCopyrightText: 2026 Dr Sohil Momin
+# SPDX-License-Identifier: LicenseRef-Forge-Proprietary
+#
+# tools/check_content.py has existed since the 2026-11-14 advance and it was
+# described as "the content check now RUNS". It did not: it was in no workflow,
+# and on the current layout it answered "index.html not found" on every run,
+# because the list of portraits moved out of root index.html into the app at
+# docs/play/index.html. A guard that is never executed and could never go green
+# guards nothing. This workflow is what makes it real.
+#
+# Two steps, in this order on purpose:
+#   1. the corpus must be consistent
+#   2. the checker must be able to FAIL — tools/test_check_content.py breaks the
+#      corpus five ways and requires the checker to name each break. Without
+#      this, a checker that silently stopped matching anything would stay green
+#      forever and look like a healthy corpus.
+
+name: Content check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: content-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  corpus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262   # was @v4
+
+      - name: The corpus is consistent
+        run: python3 tools/check_content.py
+
+      - name: The checker bites (5 mutations, all must be caught)
+        run: python3 tools/test_check_content.py

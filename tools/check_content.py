@@ -60,16 +60,25 @@ def main():
             if token not in text:
                 problems.append("%s: missing %s" % (rel(os.path.join(remedies_dir, f)), token))
 
-    # 2. the landing index references exactly the portraits on disk
-    index_path = os.path.join(ROOT, "index.html")
-    if os.path.exists(index_path):
+    # 2. the index that lists the portraits references exactly the portraits on
+    #    disk. This used to be root index.html. The landing page then moved to
+    #    docs/index.html and the list itself moved into the app
+    #    (docs/play/index.html), so the old path stopped existing and this check
+    #    answered "index.html not found" on every run - a guard that can never go
+    #    green is not a guard. Ask the layout where the list actually is.
+    index_path = None
+    for candidate in ("docs/play/index.html", "index.html"):
+        if os.path.exists(os.path.join(ROOT, candidate)):
+            index_path = os.path.join(ROOT, candidate)
+            break
+    if index_path:
         refs = set(re.findall(r"remedies/([a-z0-9-]+)\.html", read(index_path)))
         for s in sorted(refs - slugs):
-            problems.append("index.html references remedies/%s.html which does not exist" % s)
+            problems.append("%s references remedies/%s.html which does not exist" % (rel(index_path), s))
         for s in sorted(slugs - refs):
-            problems.append("remedies/%s.html is not referenced from index.html" % s)
+            problems.append("remedies/%s.html is not referenced from %s" % (s, rel(index_path)))
     else:
-        problems.append("index.html not found")
+        problems.append("no index that lists the portraits was found (docs/play/index.html or index.html)")
 
     # 3. the offline search index has exactly one entry per portrait
     si_path = os.path.join(ROOT, "assets", "search-index.js")
@@ -131,6 +140,41 @@ def main():
                     "docs/play/%s differs from %s - the served edition and the source page must be the same text"
                     % (f, f)
                 )
+
+    # 7. every advertised count is the real count - not just the README's. The
+    #    social-card alt text of each portrait ("344 classical remedy portraits")
+    #    is repeated across the corpus, so a five-remedy batch that updated only
+    #    the README would leave hundreds of pages lying about the size of it.
+    claim_re = re.compile(r"(\d+)\s+(?:classical\s+)?remedy portraits")
+    claim_files = 0
+    for dirpath, dirnames, filenames in os.walk(ROOT):
+        dirnames[:] = sorted(d for d in dirnames if d not in (".git", "node_modules"))
+        for f in sorted(filenames):
+            if not f.endswith((".html", ".md", ".json", ".js")):
+                continue
+            p = os.path.join(dirpath, f)
+            try:
+                text = read(p)
+            except (UnicodeDecodeError, OSError):
+                continue
+            claims = {int(m) for m in claim_re.findall(text)}
+            if claims:
+                claim_files += 1
+            for c in sorted(claims):
+                if c != n:
+                    problems.append("%s advertises %d remedy portraits but there are %d" % (rel(p), c, n))
+    print("files advertising a portrait count: %d" % claim_files)
+
+    # 8. the search index is served from two places - assets/ (the app source)
+    #    and docs/play/assets/ (the copy the web edition actually loads). Only
+    #    the first was ever checked, so a rebuilt source index could ship while
+    #    the live search kept serving the old one.
+    served_si = os.path.join(ROOT, "docs", "play", "assets", "search-index.js")
+    if os.path.exists(si_path) and os.path.exists(served_si):
+        if read(si_path) != read(served_si):
+            problems.append("docs/play/assets/search-index.js differs from assets/search-index.js")
+    elif not os.path.exists(served_si):
+        problems.append("docs/play/assets/search-index.js not found")
 
     if problems:
         print("\nFAIL: %d problem(s) found:" % len(problems))
