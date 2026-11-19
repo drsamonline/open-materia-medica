@@ -25,7 +25,61 @@
       "producer": "audit-2026-11-10",
       "class": "canonical",
       "at": "2026-11-10T15:12:51Z"
+    },
+    "assets/search-core.js": {
+      "sha": "480b339554223ff44f38c20dbea3b58a9b1f1116",
+      "producer": "forge-advance-2026-11-20",
+      "class": "agent",
+      "at": "2026-11-19T18:37:15Z"
+    },
+    "docs/play/assets/search-core.js": {
+      "sha": "480b339554223ff44f38c20dbea3b58a9b1f1116",
+      "producer": "forge-advance-2026-11-20",
+      "class": "agent",
+      "at": "2026-11-19T18:37:16Z"
+    },
+    "tools/test-search.js": {
+      "sha": "8a8d8d01bb3e99f518a6a5f6335a1238986519e9",
+      "producer": "forge-advance-2026-11-20",
+      "class": "agent",
+      "at": "2026-11-19T18:37:16Z"
+    },
+    "docs/play/search.html": {
+      "sha": "88233fcbacdcfdde287218847d7232af418c4318",
+      "producer": "forge-advance-2026-11-20",
+      "class": "agent",
+      "at": "2026-11-19T18:37:16Z"
+    },
+    "docs/play/sw.js": {
+      "sha": "e11f244404a206b8a78351d832e0bc865090ec8c",
+      "producer": "forge-advance-2026-11-20",
+      "class": "agent",
+      "at": "2026-11-19T18:37:16Z"
+    },
+    "sw.js": {
+      "sha": "e11f244404a206b8a78351d832e0bc865090ec8c",
+      "producer": "forge-advance-2026-11-20",
+      "class": "agent",
+      "at": "2026-11-19T18:37:16Z"
+    },
+    "tools/check_content.py": {
+      "sha": "844a4ecd84d163517f3af15cd36942d8f54cbac0",
+      "producer": "forge-advance-2026-11-20",
+      "class": "agent",
+      "at": "2026-11-19T18:37:16Z"
+    },
+    "tools/test_check_content.py": {
+      "sha": "5a22d4b4a64ced6c36a46fe31e4bb8c1fa554caf",
+      "producer": "forge-advance-2026-11-20",
+      "class": "agent",
+      "at": "2026-11-19T18:37:16Z"
+    },
+    ".github/workflows/content-check.yml": {
+      "sha": "b391c1559c7f20ef1d852a83e913ed42790dd71a",
+      "producer": "forge-advance-2026-11-20",
+      "class": "agent",
+      "at": "2026-11-19T18:37:16Z"
     }
   },
-  "updated": "2026-11-10T15:12:51Z"
+  "updated": "2026-11-19T18:37:16Z"
 }
