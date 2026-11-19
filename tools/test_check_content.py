@@ -10,6 +10,8 @@ ways a real mistake breaks it and requires the checker to name each one:
   3. an advertised count that is not the real count
   4. a served search index that drifted from the source
   5. a served portrait that drifted from the source
+  6. a served script that drifted from its source copy
+  7. a script a page loads that the service worker never precaches
 
 Each break is reverted before the next one, and the tree is green again at the
 end — so the test also proves the checker does not fail a corpus it just passed.
@@ -116,6 +118,27 @@ def main():
         with open(served_page, "w", encoding="utf-8") as f:
             f.write(original_page)
 
+        # 6. a served script drifts from its source copy
+        served_core = os.path.join(root, "docs", "play", "assets", "search-core.js")
+        with open(served_core, encoding="utf-8") as f:
+            original_core = f.read()
+        with open(served_core, "a", encoding="utf-8") as f:
+            f.write("\n")
+        expect_red("served script drifts", root, "docs/play/assets/search-core.js differs from assets/search-core.js")
+        with open(served_core, "w", encoding="utf-8") as f:
+            f.write(original_core)
+
+        # 7. a page loads a script the service worker does not precache - the
+        #    failure that works perfectly online and dies offline
+        served_sw = os.path.join(root, "docs", "play", "sw.js")
+        with open(served_sw, encoding="utf-8") as f:
+            original_sw = f.read()
+        edit(served_sw, '"assets/search-core.js", ', "")
+        expect_red("a loaded script is not precached", root,
+                   "assets/search-core.js is loaded by search.html but is not in the sw.js FILES precache")
+        with open(served_sw, "w", encoding="utf-8") as f:
+            f.write(original_sw)
+
         # every break reverted: the corpus must be green again
         code, out = run(root)
         if code != 0:
@@ -130,7 +153,7 @@ def main():
         for f in failures:
             print("  - " + f)
         return 1
-    print("\nOK: 5/5 mutations caught, and the corpus is green when they are reverted.")
+    print("\nOK: 7/7 mutations caught, and the corpus is green when they are reverted.")
     return 0
 
 

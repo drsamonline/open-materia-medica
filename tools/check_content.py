@@ -165,16 +165,59 @@ def main():
                     problems.append("%s advertises %d remedy portraits but there are %d" % (rel(p), c, n))
     print("files advertising a portrait count: %d" % claim_files)
 
-    # 8. the search index is served from two places - assets/ (the app source)
-    #    and docs/play/assets/ (the copy the web edition actually loads). Only
-    #    the first was ever checked, so a rebuilt source index could ship while
-    #    the live search kept serving the old one.
+    # 8. every asset the app loads is served from two places - assets/ (the app
+    #    source) and docs/play/assets/ (the copy the web edition actually loads).
+    #    Only the search index used to be checked, so a rebuilt script could ship
+    #    in one place while the live app kept running the other. The list is
+    #    explicit, not a directory walk: an asset that exists only in one place is
+    #    a different mistake, and this check is about the ones that must match.
+    for asset in ("search-index.js", "search-core.js"):
+        src_a = os.path.join(ROOT, "assets", asset)
+        served_a = os.path.join(ROOT, "docs", "play", "assets", asset)
+        if os.path.exists(src_a) and os.path.exists(served_a):
+            if read(src_a) != read(served_a):
+                problems.append("docs/play/assets/%s differs from assets/%s" % (asset, asset))
+        elif not os.path.exists(served_a):
+            problems.append("docs/play/assets/%s not found" % asset)
     served_si = os.path.join(ROOT, "docs", "play", "assets", "search-index.js")
-    if os.path.exists(si_path) and os.path.exists(served_si):
-        if read(si_path) != read(served_si):
-            problems.append("docs/play/assets/search-index.js differs from assets/search-index.js")
-    elif not os.path.exists(served_si):
-        problems.append("docs/play/assets/search-index.js not found")
+
+    # 9. everything the app loads is precached. sw.js FILES is what makes the app
+    #    work with no network - the promise the whole project is built on - and
+    #    nothing checked it, so a new script could be added to a page, work
+    #    perfectly online, and vanish the moment the reader is offline. Both
+    #    copies of sw.js must be the same file, and must list every local script
+    #    and stylesheet the play pages load.
+    if os.path.isdir(served_pages):
+        sw_root = os.path.join(ROOT, "sw.js")
+        sw_served = os.path.join(served_pages, "sw.js")
+        if not os.path.exists(sw_served):
+            problems.append("docs/play/sw.js not found")
+        else:
+            if os.path.exists(sw_root) and read(sw_root) != read(sw_served):
+                problems.append("docs/play/sw.js differs from sw.js")
+            sw = read(sw_served)
+            m = re.search(r"const FILES\s*=\s*\[(.*?)\];", sw, re.S)
+            if not m:
+                problems.append("docs/play/sw.js: could not find the FILES precache list")
+            else:
+                precached = set(re.findall(r'"([^"]+)"', m.group(1)))
+                loaded = {}
+                for f in sorted(os.listdir(served_pages)):
+                    if not f.endswith(".html"):
+                        continue
+                    text = read(os.path.join(served_pages, f))
+                    refs = re.findall(r'<script src="([^"]+)"', text)
+                    refs += re.findall(r'<link[^>]+href="([^"]+\.(?:css|js))"', text)
+                    for r in refs:
+                        if r.startswith(("http:", "https:", "//", "data:")):
+                            continue
+                        loaded.setdefault(r, set()).add(f)
+                for r in sorted(loaded):
+                    if r not in precached:
+                        problems.append(
+                            "docs/play/%s is loaded by %s but is not in the sw.js FILES precache - "
+                            "it would work online and fail offline"
+                            % (r, ", ".join(sorted(loaded[r])[:3])))
 
     if problems:
         print("\nFAIL: %d problem(s) found:" % len(problems))

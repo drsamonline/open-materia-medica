@@ -120,6 +120,7 @@
 </div>
 
 <script src="assets/search-index.js"></script>
+<script src="assets/search-core.js"></script>
 <script>
 (function () {
   var DATA = window.OMM_INDEX || [];
@@ -128,35 +129,10 @@
       stat = document.getElementById('stat'),
       sugg = document.getElementById('suggest');
 
-  var STOP = new Set(['the','a','an','of','and','with','from','that','this','like','one','who','is','it','as','at','in','on','for','to','by','or','be']);
   var SUGGESTIONS = ['burning','worse midnight','fear of death','thirstless','restlessness','left side',
                      'better motion','worse cold','craves salt','grief','diarrhoea','insomnia'];
 
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
-
-  function terms(qs){
-    var all = qs.toLowerCase().split(/\s+/).filter(Boolean);
-    var keep = all.filter(function(w){ return !STOP.has(w); });
-    return keep.length ? keep : all;
-  }
-
-  function score(r, ts){
-    /* build the lower-cased haystack once per remedy, not on every keystroke */
-    if (r._h === undefined){
-      r._n = r.name.toLowerCase();
-      r._t = (r.tagline || '').toLowerCase();
-      r._h = (r.name + ' ' + r.tagline + ' ' + (r.essence || '') + ' ' + r.text).toLowerCase();
-    }
-    var name = r._n, hay = r._h, s = 0;
-    for (var i = 0; i < ts.length; i++){
-      var t = ts[i], cnt = hay.split(t).length - 1;
-      if (cnt === 0) return -1;
-      s += Math.min(cnt, 12);
-      if (name.indexOf(t) !== -1) s += 6;
-      if (r._t.indexOf(t) !== -1) s += 3;
-    }
-    return s;
-  }
 
   function mark(s, ts){
     var o = esc(s);
@@ -174,19 +150,28 @@
       stat.textContent = 'Index loaded: ' + DATA.length + ' remedies.';
       return;
     }
-    var ts = terms(raw);
-    var hits = DATA.map(function(r){ return { r: r, s: score(r, ts) }; })
-                   .filter(function(x){ return x.s >= 0; })
-                   .sort(function(a, b){ return b.s - a.s; })
-                   .slice(0, 40);
-    if (!hits.length){
+    var res = OMMSearch.run(DATA, raw);
+    var ts = res.terms;
+    var hits = res.hits.slice(0, 40);
+    if (!res.total){
       stat.textContent = 'No remedy matches “' + raw + '”.';
       out.innerHTML = '<div class="card"><p>Try a plainer word — a sensation (<i>burning</i>, <i>stitching</i>), '
         + 'a time (<i>midnight</i>, <i>4 a.m.</i>), a modality (<i>worse cold</i>, <i>better motion</i>), '
         + 'or a substance (<i>arsenic</i>, <i>foxglove</i>).</p></div>';
       return;
     }
-    stat.textContent = hits.length + ' matching remedies' + (hits.length === 40 ? ' (showing the top 40)' : '');
+    /* A partial answer says so: an answer for fewer words must never look like an
+       answer for all of them. Any word the corpus does not use at all is named. */
+    function quote(t){ return '“' + esc(t) + '”'; }
+    var note = '';
+    if (!res.strict){
+      var kept = res.terms.filter(function(t){ return res.absent.indexOf(t) === -1; });
+      note = res.absent.length
+        ? 'No remedy uses ' + res.absent.map(quote).join(' or ')
+          + ' — closest matches for ' + kept.map(quote).join(' ') + ': '
+        : 'No remedy matches all of ' + res.terms.map(quote).join(' ') + ' — closest matches: ';
+    }
+    stat.textContent = note + res.total + ' matching remedies' + (res.total > 40 ? ' (showing the top 40)' : '');
     out.innerHTML = hits.map(function(x){
       var r = x.r;
       return '<div class="result"><a href="remedies/' + r.slug + '.html">' + mark(r.name, ts) + '</a>'
