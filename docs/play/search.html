@@ -155,7 +155,19 @@
     var hits = res.hits.slice(0, 40);
     if (!res.total){
       stat.textContent = 'No remedy matches “' + raw + '”.';
-      out.innerHTML = '<div class="card"><p>Try a plainer word — a sensation (<i>burning</i>, <i>stitching</i>), '
+      /* A name typed a letter wrong is not a no-match, it is a typo. The suggestion
+         is a LINK to the remedy, never a result: nothing was found, and this says
+         what was probably meant. */
+      var did = '';
+      if (res.suggest && res.suggest.length){
+        did = '<p><strong>Did you mean '
+          + res.suggest.map(function(x){
+              return '<a href="remedies/' + x.slug + '.html">' + esc(x.name) + '</a>';
+            }).join(', ')
+          + '?</strong></p>';
+      }
+      out.innerHTML = '<div class="card">' + did
+        + '<p>Try a plainer word — a sensation (<i>burning</i>, <i>stitching</i>), '
         + 'a time (<i>midnight</i>, <i>4 a.m.</i>), a modality (<i>worse cold</i>, <i>better motion</i>), '
         + 'or a substance (<i>arsenic</i>, <i>foxglove</i>).</p></div>';
       return;
