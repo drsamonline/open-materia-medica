@@ -88,10 +88,10 @@
     },
     "VERSION": {
       "sha": "9084fa2f716a7117829f3f32a5f4cef400e02903",
-      "producer": "forge-advance-2026-11-22",
-      "class": "agent",
-      "at": "2026-11-22T00:33:23Z"
+      "producer": "app-builder/.github/workflows/build.yml version job",
+      "class": "generated",
+      "at": "2026-11-22T07:00:33Z"
     }
   },
-  "updated": "2026-11-22T00:33:26Z"
+  "updated": "2026-11-22T07:00:33Z"
 }
