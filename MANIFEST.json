@@ -27,40 +27,40 @@
       "at": "2026-11-10T15:12:51Z"
     },
     "assets/search-core.js": {
-      "sha": "ac5bf712ee6335ee53bab655c599408f4574ecfb",
-      "producer": "forge-advance-2026-11-22",
+      "sha": "d4d3dccb72334b9771869101e7711ff953afc630",
+      "producer": "forge-cycle@8d147db",
       "class": "agent",
-      "at": "2026-11-22T00:33:26Z"
+      "at": "2026-11-24T06:39:38Z"
     },
     "docs/play/assets/search-core.js": {
-      "sha": "ac5bf712ee6335ee53bab655c599408f4574ecfb",
-      "producer": "forge-advance-2026-11-22",
+      "sha": "d4d3dccb72334b9771869101e7711ff953afc630",
+      "producer": "forge-cycle@8d147db",
       "class": "agent",
-      "at": "2026-11-22T00:33:26Z"
+      "at": "2026-11-24T06:39:38Z"
     },
     "tools/test-search.js": {
-      "sha": "f167de4c7dad54e5d72391b1c4092e0263423422",
-      "producer": "forge-advance-2026-11-22",
+      "sha": "df56b6aa67aed6fe36147f2f15b849d20725e1ac",
+      "producer": "forge-cycle@8d147db",
       "class": "agent",
-      "at": "2026-11-22T00:33:26Z"
+      "at": "2026-11-24T06:39:39Z"
     },
     "docs/play/search.html": {
-      "sha": "efcaae60a0f33284c2f5f5c66f257ad510d4305a",
-      "producer": "forge-advance-2026-11-22",
+      "sha": "abecbf90a3209cef96c4e64ce6963c791db3f7df",
+      "producer": "forge-cycle@8d147db",
       "class": "agent",
-      "at": "2026-11-22T00:33:26Z"
+      "at": "2026-11-24T06:39:39Z"
     },
     "docs/play/sw.js": {
-      "sha": "0c4185b7b6274a0c96073dced738c751731058f5",
-      "producer": "forge-advance-2026-11-22",
+      "sha": "26d1c2406ebbe29648a69a00d2119850d7da4dea",
+      "producer": "forge-cycle@8d147db",
       "class": "agent",
-      "at": "2026-11-22T00:33:26Z"
+      "at": "2026-11-24T06:39:39Z"
     },
     "sw.js": {
-      "sha": "0c4185b7b6274a0c96073dced738c751731058f5",
-      "producer": "forge-advance-2026-11-22",
+      "sha": "26d1c2406ebbe29648a69a00d2119850d7da4dea",
+      "producer": "forge-cycle@8d147db",
       "class": "agent",
-      "at": "2026-11-22T00:33:26Z"
+      "at": "2026-11-24T06:39:39Z"
     },
     "tools/check_content.py": {
       "sha": "844a4ecd84d163517f3af15cd36942d8f54cbac0",
@@ -87,11 +87,35 @@
       "at": "2026-11-22T00:33:23Z"
     },
     "VERSION": {
-      "sha": "9084fa2f716a7117829f3f32a5f4cef400e02903",
-      "producer": "forge-advance-2026-11-22",
+      "sha": "26aaba0e86632e4d537006e45b0ec918d780b3b4",
+      "producer": "forge-cycle@8d147db",
       "class": "agent",
-      "at": "2026-11-22T00:33:23Z"
+      "at": "2026-11-24T06:39:38Z"
+    },
+    "assets/style.css": {
+      "sha": "8f453ddb5c6677cfaf84f7314bb816697cdc4628",
+      "producer": "forge-cycle@8d147db",
+      "class": "agent",
+      "at": "2026-11-24T06:39:38Z"
+    },
+    "docs/play/assets/style.css": {
+      "sha": "8f453ddb5c6677cfaf84f7314bb816697cdc4628",
+      "producer": "forge-cycle@8d147db",
+      "class": "agent",
+      "at": "2026-11-24T06:39:38Z"
+    },
+    "tools/mutate_search.py": {
+      "sha": "9822a5b01090ca88d89981e49cbbe15edb2ad34a",
+      "producer": "forge-cycle@8d147db",
+      "class": "agent",
+      "at": "2026-11-24T06:39:39Z"
+    },
+    "changes/2026-11-24-spelling-reach.md": {
+      "sha": "88e70bc7d711c5c3430a197bd1dd85e239525065",
+      "producer": "forge-cycle@8d147db",
+      "class": "agent",
+      "at": "2026-11-24T06:39:39Z"
     }
   },
-  "updated": "2026-11-22T00:33:26Z"
+  "updated": "2026-11-24T06:39:39Z"
 }
