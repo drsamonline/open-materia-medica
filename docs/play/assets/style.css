@@ -280,6 +280,8 @@ input[type=search]:focus,input[type=text]:focus{outline:none;border-color:var(--
 .result .snip{font-size:.93rem;margin-top:7px;color:var(--ink-soft)}
 mark{background:var(--gold-soft);color:var(--gold-ink);padding:0 3px;border-radius:3px}
 .hint{color:var(--muted);font-size:.9rem}
+.didyoumean{margin:0 0 10px;padding:10px 12px;border-left:3px solid var(--accent);background:var(--accent-ll);border-radius:6px}
+.didyoumean .hint{display:block;margin-top:4px}
 .suggest{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 6px}
 .suggest button{
   font:inherit;font-size:.85rem;background:var(--card);border:1px solid var(--line-2);
