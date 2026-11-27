@@ -161,9 +161,12 @@ eq('a misspelt name is not relaxed into a partial answer', typo.strict, true);
 eq('"beladonna" suggests Belladonna', typo.suggest[0] && typo.suggest[0].name, 'Belladonna');
 eq('the suggestion names the word it answers for', typo.suggest[0] && typo.suggest[0].term, 'beladonna');
 
+/* A hyphen typed where the name has a space is a SEPARATOR, not a letter — so it is
+   read as a space (2026-11-27). It used to find nothing strictly and be offered only
+   as a suggestion; the spaced form of the same query always answered. */
 const hyphen = S.run(DATA, 'nux-vomica');
-eq('a hyphen where the name has a space finds nothing strictly', hyphen.total, 0);
-ok('"nux-vomica" suggests Nux vomica', hyphen.suggest.some(function (x) { return x.name === 'Nux vomica'; }));
+eq('a hyphen where the name has a space is read as a space', hyphen.readAs, 'nux vomica');
+ok('"nux-vomica" finds the remedy it names', hyphen.hits.some(function (x) { return x.r.name === 'Nux vomica'; }));
 
 const swap = S.run(DATA, 'belladnona');
 ok('a transposition suggests the name', swap.suggest.some(function (x) { return x.name === 'Belladonna'; }));
@@ -194,6 +197,123 @@ ok('the cap really caps: eight names one edit away yield five', (function () {
 ok('a suggestion is a candidate name, never a hit object',
    typo.suggest.every(function (x) { return x.r === undefined && x.s === undefined; }));
 
+/* --- 5d. a hyphen typed where the name has a space ----------------------- */
+/* "nat-mur", "nux-vom" and "ammon-carb" are how people type compound remedy names,
+   and the corpus spells all of them with a space — so the literal token was a word
+   it does not use and the page said "No remedy matches". The property pinned here is
+   the one a reader can check: the hyphenated form and the spaced form are the same
+   query and must answer the same remedies, in the same order. */
+function slugs(res) { return res.hits.map(function (x) { return x.r.slug; }); }
+
+const natSp = S.run(DATA, 'nat mur');
+const natHy = S.run(DATA, 'nat-mur');
+ok('"nat mur" answers (the spaced form was never broken)', natSp.total > 0);
+ok('"nat-mur" answers at all', natHy.total > 0);
+eq('"nat-mur" answers exactly what "nat mur" answers', slugs(natHy), slugs(natSp));
+eq('"nat-mur" says how it was read', natHy.readAs, 'nat mur');
+eq('a hyphenated answer is still a strict answer, not a partial one', natHy.strict, true);
+eq('"nat-mur" carries no suggestion: it was answered, not guessed at', natHy.suggest.length, 0);
+
+const nuxHy = S.run(DATA, 'nux-vomica');
+const nuxSp = S.run(DATA, 'nux vomica');
+eq('"nux-vomica" answers what "nux vomica" answers', slugs(nuxHy), slugs(nuxSp));
+eq('the top hit for "nux-vomica" is the remedy it names', nuxHy.hits[0].r.name, 'Nux vomica');
+
+ok('"nux-vom" (a name cut short) answers the way "nux vom" does',
+   slugs(S.run(DATA, 'nux-vom')).join() === slugs(S.run(DATA, 'nux vom')).join() &&
+   S.run(DATA, 'nux-vom').total > 0);
+ok('"ammon-carb" reaches Ammonium carbonicum',
+   S.run(DATA, 'ammon-carb').hits.some(function (x) { return x.r.name === 'Ammonium carbonicum'; }));
+
+/* The literal reading wins: X-Ray IS a name in the index, hyphen and all. */
+const xray = S.run(DATA, 'x-ray');
+ok('a hyphen that is part of a real name still finds it',
+   xray.hits.some(function (x) { return x.r.name === 'X-Ray'; }));
+eq('and that query is not reported as re-read', xray.readAs, undefined);
+
+/* An en dash is a hyphen someone copied out of a word processor. */
+eq('an en dash is read the same way as a hyphen', S.run(DATA, 'nat\u2013mur').readAs, 'nat mur');
+
+/* The retry must not invent an answer, and must not become a suggestion engine. */
+const noHy = S.run(DATA, 'zzz-qqq');
+eq('a hyphenated query nothing is close to still finds nothing', noHy.total, 0);
+eq('and carries no suggestion', noHy.suggest.length, 0);
+
+/* --- 5c. the reach of that correction: two edits, and beside a partial --- */
+/* The one-edit suggestion above only ran when the query found NOTHING, and it only
+   looked one edit away. Both were too narrow: "nux vomicer" is two edits from Nux
+   vomica, and because "nux" still matched, the search answered three partial
+   remedies and never said what the reader meant. These assertions pin the two
+   widenings, and pin the guards that keep them from becoming a guess. */
+
+ok('search-core.js publishes maxEdits()', typeof S.maxEdits === 'function');
+eq('a word of seven letters or more may be corrected by two edits', S.maxEdits('vomicer'), 2);
+eq('a six-letter word may not', S.maxEdits('albimu'), 1);
+eq('a five-letter word may not', S.maxEdits('albim'), 1);
+eq('a three-letter word may not', S.maxEdits('nux'), 1);
+eq('two substitutions are distance 2', S.distance('vomicer', 'vomica', 2), 2);
+/* The length rule has to bite on behaviour, not only on the helper: "kalmu" is two
+   edits from the name Kalium, and at six letters that is not a typo. */
+const kal = [{ slug: 'k', name: 'Kalium', tagline: '', essence: '', text: '' }];
+eq('a six-letter word two edits from a name is not "corrected"', S.suggest(kal, 'kalmu'), []);
+eq('one edit from the same name is', S.suggest(kal, 'kalmium')[0] && S.suggest(kal, 'kalmium')[0].name, 'Kalium');
+
+/* 1. two edits reach the name */
+const nv = S.run(DATA, 'nux vomicer');
+eq('"nux vomicer" is two edits from the name, and finds no strict hit', nv.strict, false);
+ok('"nux vomicer" still answers partially (it did before)', nv.total > 0);
+eq('"nux vomicer" now says what was probably meant', nv.suggest[0] && nv.suggest[0].name, 'Nux vomica');
+eq('the suggestion reports the real distance, 2', nv.suggest[0] && nv.suggest[0].distance, 2);
+eq('the suggestion names the word it answers for', nv.suggest[0] && nv.suggest[0].term, 'nux vomicer');
+ok('a two-edit typo with one word still matching is not left silent', nv.suggest.length > 0);
+
+/* 2. the suggested remedy leads the partial answer — the reader asked for it */
+eq('the mistyped name\'s remedy now ranks first, not second', nv.hits[0].r.name, 'Nux vomica');
+ok('promotion MOVES a hit, it never adds one', nv.hits.length === S.rankPartial(DATA, S.terms('nux vomicer')).length);
+
+const ars = S.run(DATA, 'arsenicum albim');
+eq('"arsenicum albim" suggests Arsenicum album', ars.suggest[0] && ars.suggest[0].name, 'Arsenicum album');
+eq('and puts it first among the partial hits', ars.hits[0].r.name, 'Arsenicum album');
+ok('a whole-query match outranks a single-word one (Veratrum album is one edit from "albim")',
+   (function () {
+     const v = ars.suggest.filter(function (x) { return x.name === 'Veratrum album'; })[0];
+     return !!v && ars.suggest.indexOf(v) > ars.suggest.indexOf(ars.suggest[0]) && ars.suggest[0].whole === true;
+   })());
+
+const bl3 = S.run(DATA, 'beladonnna');
+eq('a two-edit misspelling with nothing else matching now suggests the name',
+   bl3.suggest[0] && bl3.suggest[0].name, 'Belladonna');
+
+/* 3. the guards. A word the corpus KNOWS is never corrected. */
+eq('a partial answer with no unknown word still carries no suggestion', colic.suggest.length, 0);
+eq('and a query mixing a known word with junk still carries none',
+   S.run(DATA, 'colic zzzznotaremedy').suggest.length, 0);
+ok('suggest() corrects only the words it is given (a whole-query match is still allowed)',
+   S.suggest(DATA, 'arsenicum albim', ['albim']).every(function (x) {
+     return x.term === 'albim' || x.whole === true;
+   }));
+eq('a suggestion still never appears beside a strict answer', S.run(DATA, 'worse midnight').suggest.length, 0);
+ok('every suggestion is still a link, never a hit',
+   nv.suggest.every(function (x) { return x.r === undefined && x.s === undefined; }));
+ok('promote() on no suggestions changes nothing', S.promote([{ r: { slug: 'a' }, s: 1, m: 1 }], []).length === 1);
+ok('promote() never adds the suggested remedy to an empty list', S.promote([], nv.suggest).length === 0);
+
+/* 4. two edits are offered only when the corpus holds exactly ONE name that close.
+   Two names two letters away is a coin toss; the search must say nothing. */
+/* "nux vomicer" is exactly two edits from "Nux vomica"; "Nux vomicus" is two as
+   well (e->u, r->s), so the corpus would hold two names that close and neither may
+   be offered. With one name present, the same query is answered. */
+const amb = [
+  { slug: 'x', name: 'Nux vomica', tagline: '', essence: '', text: '' },
+  { slug: 'y', name: 'Nux vomicus', tagline: '', essence: '', text: '' }
+];
+eq('two names two edits away are not guessed between', S.suggest(amb, 'nux vomicer'), []);
+const one = [amb[0]];
+eq('one name two edits away is offered',
+   S.suggest(one, 'nux vomicer')[0] && S.suggest(one, 'nux vomicer')[0].name, 'Nux vomica');
+ok('the ambiguity rule is the disambiguator, not the cap',
+   typeof S.disambiguate === 'function' && S.disambiguate([]).length === 0);
+
 /* --- 6. the page loads the module and calls it --------------------------- */
 const page = fs.readFileSync(path.join(ROOT, 'docs', 'play', 'search.html'), 'utf8');
 ok('search.html loads assets/search-core.js', /<script src="assets\/search-core\.js"><\/script>/.test(page));
@@ -206,11 +326,23 @@ ok('search.html offers the spelling suggestion in the no-match branch',
    /if \(res\.suggest[^)]*\)\s*\{/.test(page));
 ok('search.html renders a suggestion as a LINK to the remedy, not as a result',
    /Did you mean[\s\S]{0,400}href="remedies\//.test(page));
+ok('search.html offers the suggestion beside a PARTIAL answer too',
+   /var did = '';/.test(page) && /out\.innerHTML = did \+ hits/.test(page));
+ok('search.html says how far the mistyped word was from the name',
+   page.indexOf('one letter') !== -1 && page.indexOf('two letters') !== -1);
+ok('search.html never renders the suggestion as a result row',
+   /Did you mean[\s\S]{0,300}\?<\/strong>/.test(page));
+/* The hyphen retry has to be SAID on the page, or it is a silent guess. */
+ok('search.html renders the re-read receipt', page.indexOf('var note = res.readAs') !== -1);
+ok('search.html says it as "Read X as Y"', page.indexOf("' as ' + quote(res.readAs)") !== -1);
 
 /* --- 7. the two copies of the module are one text ------------------------ */
 ok('assets/search-core.js is byte-identical to docs/play/assets/search-core.js',
    fs.readFileSync(path.join(ROOT, 'assets', 'search-core.js'), 'utf8') ===
    fs.readFileSync(path.join(ROOT, 'docs', 'play', 'assets', 'search-core.js'), 'utf8'));
+ok('assets/style.css is byte-identical to docs/play/assets/style.css',
+   fs.readFileSync(path.join(ROOT, 'assets', 'style.css'), 'utf8') ===
+   fs.readFileSync(path.join(ROOT, 'docs', 'play', 'assets', 'style.css'), 'utf8'));
 
 console.log('');
 if (fails.length) {

@@ -119,15 +119,35 @@
      remedy NAMES that is the commonest way a search box fails.
 
      What it may and may not do:
-       - a suggestion is a CANDIDATE NAME, never a hit: it is offered only when the
-         query found nothing at all, and the page renders it as a link to the
-         remedy, not as a result;
+       - a suggestion is a CANDIDATE NAME, never a hit: the page renders it as a
+         link to the remedy, not as a result;
        - it names the WORD it is answering for, so the user can see what was
          corrected;
-       - one edit only — insertion, deletion, substitution, or two adjacent letters
-         transposed — and nothing wider. No fuzzy matcher that guesses.
+       - it corrects only a word the corpus does not use ANYWHERE. A word the
+         materia medica knows is never replaced — that is what keeps "colic in
+         infants" a partial answer with no suggestion beside it;
+       - one edit — insertion, deletion, substitution, or two adjacent letters
+         transposed — and, for a word of seven letters or more, a second edit, but
+         only when the corpus holds exactly ONE name that close. Two names two
+         letters away is a coin toss, not a correction, and this search does not
+         guess.
+
+     REACH, 2026-11-24. It used to be one edit and it used to run only when the
+     query found NOTHING. Both were too narrow for the way a name is actually
+     mistyped. "arsenicum albim" and "nux vomicer" are two edits from the name,
+     and because one word of each query still matched, the search answered eleven
+     and three partial remedies and never said what the reader had probably meant
+     — the right remedy sitting second in both lists. So the suggestion now runs
+     whenever the STRICT pass finds nothing (partial answer or not), and its reach
+     is two edits on a long word.
   */
   var SUGGEST_MAX = 5;
+
+  /* A second edit is only a typo on a word long enough for it to still be the same
+     name: at seven characters "vomicer" is "vomica"; at four, a two-edit
+     neighbour is simply a different word. */
+  var TWO_EDIT_MIN = 7;
+  function maxEdits(s) { return s.length >= TWO_EDIT_MIN ? 2 : 1; }
 
   /* Bounded Damerau-Levenshtein distance. Returns the true distance when it is at
      most `max`, and max+1 as soon as it cannot be — so a long name costs no more
@@ -155,44 +175,111 @@
     return d0[lb];
   }
 
-  /* The names the query was probably reaching for. Never called when the query
-     already has an answer, and never a substitute for one. */
-  function suggest(index, raw) {
-    var ts = terms(raw);
-    if (!ts.length) { return []; }
+  /* A second-edit match survives only when nothing else is that close. One edit is
+     already specific enough to offer; two edits are offered only when the corpus
+     holds exactly one name there, so the search never picks between equals. */
+  function disambiguate(list) {
+    var byTerm = {}, keep = [], t, i, j, g, min, n;
+    for (i = 0; i < list.length; i++) {
+      t = list[i].term;
+      (byTerm[t] || (byTerm[t] = [])).push(list[i]);
+    }
+    for (t in byTerm) {
+      if (!Object.prototype.hasOwnProperty.call(byTerm, t)) { continue; }
+      g = byTerm[t]; min = 3; n = 0;
+      for (j = 0; j < g.length; j++) { if (g[j].distance < min) { min = g[j].distance; } }
+      for (j = 0; j < g.length; j++) { if (g[j].distance === min) { n++; } }
+      if (min >= 2 && n > 1) { continue; }   /* two letters from two names: a guess */
+      for (j = 0; j < g.length; j++) { if (g[j].distance === min) { keep.push(g[j]); } }
+    }
+    return keep;
+  }
+
+  /* The names the query was probably reaching for. Never called when the query has
+     a strict answer, and never a substitute for one.
+
+     `only` narrows what may be corrected: run() passes the words the corpus does
+     not use, so a word it DOES use is never rewritten into something else. */
+  function suggest(index, raw, only) {
+    var words = only || terms(raw);
+    if (!words.length) { return []; }
     /* The whole query, whitespace-collapsed: catches a multi-word name typed with
-       one typo ("nux vomic"), and a hyphen typed where the name has a space
+       a typo ("nux vomicer"), and a hyphen typed where the name has a space
        ("nux-vomica" is one substitution from "nux vomica"). */
     var q = String(raw).toLowerCase().replace(/\s+/g, ' ').trim();
-    var out = [], i, k, j, d;
+    var qMax = maxEdits(q);
+    var out = [], i, k, j, d, best;
     for (i = 0; i < index.length; i++) {
       prepare(index[i]);
       var name = index[i]._n;
       if (!name) { continue; }
       var tokens = name.split(/\s+/);
-      var best = { d: 2, via: null };
-      d = distance(q, name, 1);
-      if (d <= 1) { best = { d: d, via: q }; }
-      for (k = 0; k < ts.length && best.d > 1; k++) {
-        if (ts[k].length < 4) { continue; }   /* too short to correct honestly */
+      best = null;
+      d = distance(q, name, qMax);
+      if (d <= qMax) { best = { d: d, via: q, whole: true }; }
+      for (k = 0; k < words.length; k++) {
+        if (words[k].length < 4) { continue; }   /* too short to correct honestly */
+        var wMax = maxEdits(words[k]);
         for (j = 0; j < tokens.length; j++) {
-          d = distance(ts[k], tokens[j], 1);
-          if (d <= 1) { best = { d: d, via: ts[k] }; break; }
+          d = distance(words[k], tokens[j], wMax);
+          if (d <= wMax && (!best || d < best.d)) {
+            best = { d: d, via: words[k], whole: false };
+          }
         }
       }
-      if (best.d > 1) { continue; }
-      out.push({ slug: index[i].slug, name: index[i].name, term: best.via, distance: best.d });
+      if (!best) { continue; }
+      out.push({ slug: index[i].slug, name: index[i].name, term: best.via,
+                 distance: best.d, whole: best.whole });
     }
+    out = disambiguate(out);
+    /* A whole-query match is stronger evidence than one word matching one word,
+       so it ranks first: "arsenicum albim" is one edit from Arsenicum album, and
+       also one edit from Veratrum album on its second word alone. */
     out.sort(function (a, b) {
-      return (a.distance - b.distance) || (a.name.length - b.name.length) ||
+      return ((b.whole ? 1 : 0) - (a.whole ? 1 : 0)) || (a.distance - b.distance) ||
+             (a.name.length - b.name.length) ||
              (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
     });
     return out.slice(0, SUGGEST_MAX);
   }
 
+  /* The remedy the reader asked for, moved to the front of a partial answer.
+     Moved, never added: a suggestion can never become a hit that was not one. */
+  function promote(hits, sugg) {
+    if (!sugg.length) { return hits; }
+    var want = sugg[0].slug, i;
+    for (i = 1; i < hits.length; i++) {
+      if (hits[i].r.slug === want) { hits.unshift(hits.splice(i, 1)[0]); break; }
+    }
+    return hits;
+  }
+
+  /* A HYPHEN TYPED WHERE THE NAME HAS A SPACE, 2026-11-27.
+
+     The index spells one name with a hyphen (X-Ray) and every other compound as two
+     words, so "nat-mur" and "nat mur" are the same query typed two ways — and only
+     the second answered. The literal token "nat-mur" is a word the corpus does not
+     use anywhere, so the strict pass found nothing and the reader got a "no remedy
+     matches" page. Measured on the 344-remedy index: "nat-mur" 0 hits against
+     "nat mur" 4, "nux-vom" 0 against "nux vom" 2, "ammon-carb" 0 against
+     "ammon carb" 1.
+
+     The literal reading is tried FIRST and always wins — "x-ray" is a name in the
+     index and must not be rewritten. This is the retry: it runs only when the
+     literal reading found nothing, and the answer carries `readAs` so the page can
+     say what it did rather than answering in silence. */
+  var HYPHEN = /[\u2010\u2011\u2013\u2014-]+/g;
+
+  function unhyphenate(ts) {
+    var joined = ts.join(' ').replace(HYPHEN, ' ');
+    return joined === ts.join(' ') ? null : terms(joined);
+  }
+
   /* The whole search, with the relaxation rule and its receipt.
-       { terms, strict, absent, suggest, hits, total }
+       { terms, strict, absent, suggest, hits, total, readAs? }
      strict:  every term matched. absent: terms no remedy contains anywhere.
+     readAs:  set only when a hyphenated query was re-read with spaces (see
+              unhyphenate above) — the page says so instead of answering silently.
      suggest: candidate NAMES one edit away from the query — only when the query
               found nothing, and never a hit. */
   function run(index, raw) {
@@ -203,20 +290,33 @@
     var hits = rank(index, ts);
     if (hits.length) { out.hits = hits; out.total = hits.length; return out; }
 
+    /* The literal reading found nothing. A hyphen typed between letters is a
+       separator, not a letter, so try the same words joined by spaces. */
+    var alt = unhyphenate(ts);
+    if (alt && alt.length) {
+      var altHits = rank(index, alt);
+      if (altHits.length) {
+        out.terms = alt;
+        out.readAs = alt.join(' ');
+        out.hits = altHits;
+        out.total = altHits.length;
+        return out;
+      }
+    }
+
     var c = counts(index, ts);
     var absent = ts.filter(function (t) { return c[t] === 0; });
-    var partial = rankPartial(index, ts);
-    if (!partial.length) {
-      out.absent = absent;
-      /* Nothing to answer with at all: the last honest thing the search can do is
-         offer the NAME the user may have mistyped. */
-      out.suggest = suggest(index, raw);
-      return out;
-    }
-    out.strict = false;
     out.absent = absent;
-    out.hits = partial;
-    out.total = partial.length;
+    /* A word the corpus does not use anywhere is either a word it does not have or
+       a NAME typed wrong — and that is just as true when the query's other words
+       did answer. Only the absent words are offered a correction. */
+    out.suggest = suggest(index, raw, absent);
+
+    var partial = rankPartial(index, ts);
+    if (!partial.length) { return out; }
+    out.strict = false;
+    out.hits = promote(partial, out.suggest);
+    out.total = out.hits.length;
     return out;
   }
 
@@ -229,6 +329,9 @@
     rank: rank,
     rankPartial: rankPartial,
     distance: distance,
+    maxEdits: maxEdits,
+    disambiguate: disambiguate,
+    promote: promote,
     suggest: suggest,
     run: run
   };

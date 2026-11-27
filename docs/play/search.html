@@ -175,16 +175,35 @@
     /* A partial answer says so: an answer for fewer words must never look like an
        answer for all of them. Any word the corpus does not use at all is named. */
     function quote(t){ return '“' + esc(t) + '”'; }
-    var note = '';
+    /* A word the corpus does not use is either a word it does not have or a NAME
+       typed wrong. When it is one or two letters from a remedy name, say so —
+       beside the partial answer, never instead of it, and as a LINK, not a result.
+       This is the case that used to pass in silence: "arsenicum albim" answered
+       eleven Arsenicums and never named the one the reader meant. */
+    var did = '';
+    if (res.suggest && res.suggest.length){
+      did = '<p class="didyoumean"><strong>Did you mean '
+        + res.suggest.map(function(x){
+            return '<a href="remedies/' + x.slug + '.html">' + esc(x.name) + '</a>';
+          }).join(', ')
+        + '?</strong> <span class="hint">No remedy uses ' + quote(res.suggest[0].term)
+        + ' — it is ' + (res.suggest[0].distance === 1 ? 'one letter' : 'two letters')
+        + ' from the name above.</span></p>';
+    }
+    /* The query was read a different way than it was typed: say so, in front of
+       the count, so a hyphen answered as a space never looks like a silent guess. */
+    var note = res.readAs
+      ? 'Read ' + quote(raw) + ' as ' + quote(res.readAs) + ' — '
+      : '';
     if (!res.strict){
       var kept = res.terms.filter(function(t){ return res.absent.indexOf(t) === -1; });
-      note = res.absent.length
+      note += res.absent.length
         ? 'No remedy uses ' + res.absent.map(quote).join(' or ')
           + ' — closest matches for ' + kept.map(quote).join(' ') + ': '
         : 'No remedy matches all of ' + res.terms.map(quote).join(' ') + ' — closest matches: ';
     }
     stat.textContent = note + res.total + ' matching remedies' + (res.total > 40 ? ' (showing the top 40)' : '');
-    out.innerHTML = hits.map(function(x){
+    out.innerHTML = did + hits.map(function(x){
       var r = x.r;
       return '<div class="result"><a href="remedies/' + r.slug + '.html">' + mark(r.name, ts) + '</a>'
         + '<div class="tagline">' + mark(r.tagline || '', ts) + '</div>'
