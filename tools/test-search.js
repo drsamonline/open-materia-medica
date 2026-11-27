@@ -161,9 +161,12 @@ eq('a misspelt name is not relaxed into a partial answer', typo.strict, true);
 eq('"beladonna" suggests Belladonna', typo.suggest[0] && typo.suggest[0].name, 'Belladonna');
 eq('the suggestion names the word it answers for', typo.suggest[0] && typo.suggest[0].term, 'beladonna');
 
+/* A hyphen typed where the name has a space is a SEPARATOR, not a letter — so it is
+   read as a space (2026-11-27). It used to find nothing strictly and be offered only
+   as a suggestion; the spaced form of the same query always answered. */
 const hyphen = S.run(DATA, 'nux-vomica');
-eq('a hyphen where the name has a space finds nothing strictly', hyphen.total, 0);
-ok('"nux-vomica" suggests Nux vomica', hyphen.suggest.some(function (x) { return x.name === 'Nux vomica'; }));
+eq('a hyphen where the name has a space is read as a space', hyphen.readAs, 'nux vomica');
+ok('"nux-vomica" finds the remedy it names', hyphen.hits.some(function (x) { return x.r.name === 'Nux vomica'; }));
 
 const swap = S.run(DATA, 'belladnona');
 ok('a transposition suggests the name', swap.suggest.some(function (x) { return x.name === 'Belladonna'; }));
@@ -193,6 +196,48 @@ ok('the cap really caps: eight names one edit away yield five', (function () {
 })());
 ok('a suggestion is a candidate name, never a hit object',
    typo.suggest.every(function (x) { return x.r === undefined && x.s === undefined; }));
+
+/* --- 5d. a hyphen typed where the name has a space ----------------------- */
+/* "nat-mur", "nux-vom" and "ammon-carb" are how people type compound remedy names,
+   and the corpus spells all of them with a space — so the literal token was a word
+   it does not use and the page said "No remedy matches". The property pinned here is
+   the one a reader can check: the hyphenated form and the spaced form are the same
+   query and must answer the same remedies, in the same order. */
+function slugs(res) { return res.hits.map(function (x) { return x.r.slug; }); }
+
+const natSp = S.run(DATA, 'nat mur');
+const natHy = S.run(DATA, 'nat-mur');
+ok('"nat mur" answers (the spaced form was never broken)', natSp.total > 0);
+ok('"nat-mur" answers at all', natHy.total > 0);
+eq('"nat-mur" answers exactly what "nat mur" answers', slugs(natHy), slugs(natSp));
+eq('"nat-mur" says how it was read', natHy.readAs, 'nat mur');
+eq('a hyphenated answer is still a strict answer, not a partial one', natHy.strict, true);
+eq('"nat-mur" carries no suggestion: it was answered, not guessed at', natHy.suggest.length, 0);
+
+const nuxHy = S.run(DATA, 'nux-vomica');
+const nuxSp = S.run(DATA, 'nux vomica');
+eq('"nux-vomica" answers what "nux vomica" answers', slugs(nuxHy), slugs(nuxSp));
+eq('the top hit for "nux-vomica" is the remedy it names', nuxHy.hits[0].r.name, 'Nux vomica');
+
+ok('"nux-vom" (a name cut short) answers the way "nux vom" does',
+   slugs(S.run(DATA, 'nux-vom')).join() === slugs(S.run(DATA, 'nux vom')).join() &&
+   S.run(DATA, 'nux-vom').total > 0);
+ok('"ammon-carb" reaches Ammonium carbonicum',
+   S.run(DATA, 'ammon-carb').hits.some(function (x) { return x.r.name === 'Ammonium carbonicum'; }));
+
+/* The literal reading wins: X-Ray IS a name in the index, hyphen and all. */
+const xray = S.run(DATA, 'x-ray');
+ok('a hyphen that is part of a real name still finds it',
+   xray.hits.some(function (x) { return x.r.name === 'X-Ray'; }));
+eq('and that query is not reported as re-read', xray.readAs, undefined);
+
+/* An en dash is a hyphen someone copied out of a word processor. */
+eq('an en dash is read the same way as a hyphen', S.run(DATA, 'nat\u2013mur').readAs, 'nat mur');
+
+/* The retry must not invent an answer, and must not become a suggestion engine. */
+const noHy = S.run(DATA, 'zzz-qqq');
+eq('a hyphenated query nothing is close to still finds nothing', noHy.total, 0);
+eq('and carries no suggestion', noHy.suggest.length, 0);
 
 /* --- 5c. the reach of that correction: two edits, and beside a partial --- */
 /* The one-edit suggestion above only ran when the query found NOTHING, and it only
@@ -287,6 +332,9 @@ ok('search.html says how far the mistyped word was from the name',
    page.indexOf('one letter') !== -1 && page.indexOf('two letters') !== -1);
 ok('search.html never renders the suggestion as a result row',
    /Did you mean[\s\S]{0,300}\?<\/strong>/.test(page));
+/* The hyphen retry has to be SAID on the page, or it is a silent guess. */
+ok('search.html renders the re-read receipt', page.indexOf('var note = res.readAs') !== -1);
+ok('search.html says it as "Read X as Y"', page.indexOf("' as ' + quote(res.readAs)") !== -1);
 
 /* --- 7. the two copies of the module are one text ------------------------ */
 ok('assets/search-core.js is byte-identical to docs/play/assets/search-core.js',

@@ -190,10 +190,14 @@
         + ' — it is ' + (res.suggest[0].distance === 1 ? 'one letter' : 'two letters')
         + ' from the name above.</span></p>';
     }
-    var note = '';
+    /* The query was read a different way than it was typed: say so, in front of
+       the count, so a hyphen answered as a space never looks like a silent guess. */
+    var note = res.readAs
+      ? 'Read ' + quote(raw) + ' as ' + quote(res.readAs) + ' — '
+      : '';
     if (!res.strict){
       var kept = res.terms.filter(function(t){ return res.absent.indexOf(t) === -1; });
-      note = res.absent.length
+      note += res.absent.length
         ? 'No remedy uses ' + res.absent.map(quote).join(' or ')
           + ' — closest matches for ' + kept.map(quote).join(' ') + ': '
         : 'No remedy matches all of ' + res.terms.map(quote).join(' ') + ' — closest matches: ';

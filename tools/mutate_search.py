@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """tools/mutate_search.py — prove the search suite actually guards the 2026-11-24
-reach change. Each mutation is applied to the real file, the suite is run, and the
+reach change and the 2026-11-27 hyphen re-read. Each mutation is applied to the real file, the suite is run, and the
 mutation must turn it RED. A survivor is a test that does not test what it claims.
 
     python3 tools/mutate_search.py
@@ -42,6 +42,16 @@ MUTATIONS = [
     ("page does not say how far the word was", PAGE,
      "' — it is ' + (res.suggest[0].distance === 1 ? 'one letter' : 'two letters')",
      "' — it is close'"),
+    # --- 2026-11-27: a hyphen typed where the name has a space ----------------
+    ("the hyphen retry never runs", CORE,
+     "var alt = unhyphenate(ts);", "var alt = null;"),
+    ("a hyphen is not a separator", CORE,
+     "var HYPHEN = /[\\u2010\\u2011\\u2013\\u2014-]+/g;",
+     "var HYPHEN = /[\\u0000]+/g;"),
+    ("a re-read answer does not say how it was read", CORE,
+     "out.readAs = alt.join(' ');", "out.readAs = undefined;"),
+    ("the page does not say it re-read the query", PAGE,
+     "var note = res.readAs", "var note = false"),
 ]
 
 

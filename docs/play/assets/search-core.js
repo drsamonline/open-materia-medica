@@ -254,9 +254,32 @@
     return hits;
   }
 
+  /* A HYPHEN TYPED WHERE THE NAME HAS A SPACE, 2026-11-27.
+
+     The index spells one name with a hyphen (X-Ray) and every other compound as two
+     words, so "nat-mur" and "nat mur" are the same query typed two ways — and only
+     the second answered. The literal token "nat-mur" is a word the corpus does not
+     use anywhere, so the strict pass found nothing and the reader got a "no remedy
+     matches" page. Measured on the 344-remedy index: "nat-mur" 0 hits against
+     "nat mur" 4, "nux-vom" 0 against "nux vom" 2, "ammon-carb" 0 against
+     "ammon carb" 1.
+
+     The literal reading is tried FIRST and always wins — "x-ray" is a name in the
+     index and must not be rewritten. This is the retry: it runs only when the
+     literal reading found nothing, and the answer carries `readAs` so the page can
+     say what it did rather than answering in silence. */
+  var HYPHEN = /[\u2010\u2011\u2013\u2014-]+/g;
+
+  function unhyphenate(ts) {
+    var joined = ts.join(' ').replace(HYPHEN, ' ');
+    return joined === ts.join(' ') ? null : terms(joined);
+  }
+
   /* The whole search, with the relaxation rule and its receipt.
-       { terms, strict, absent, suggest, hits, total }
+       { terms, strict, absent, suggest, hits, total, readAs? }
      strict:  every term matched. absent: terms no remedy contains anywhere.
+     readAs:  set only when a hyphenated query was re-read with spaces (see
+              unhyphenate above) — the page says so instead of answering silently.
      suggest: candidate NAMES one edit away from the query — only when the query
               found nothing, and never a hit. */
   function run(index, raw) {
@@ -266,6 +289,20 @@
 
     var hits = rank(index, ts);
     if (hits.length) { out.hits = hits; out.total = hits.length; return out; }
+
+    /* The literal reading found nothing. A hyphen typed between letters is a
+       separator, not a letter, so try the same words joined by spaces. */
+    var alt = unhyphenate(ts);
+    if (alt && alt.length) {
+      var altHits = rank(index, alt);
+      if (altHits.length) {
+        out.terms = alt;
+        out.readAs = alt.join(' ');
+        out.hits = altHits;
+        out.total = altHits.length;
+        return out;
+      }
+    }
 
     var c = counts(index, ts);
     var absent = ts.filter(function (t) { return c[t] === 0; });
